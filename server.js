@@ -11,13 +11,11 @@ let db = {
     withdrawals: []
 };
 
-// Fonction utilitaire pour comparer les numéros sans espaces ni signe +
 function cleanPhone(p) {
     if (!p) return '';
     return String(p).replace(/[\s+]/g, '').trim();
 }
 
-// 1. Inscription
 app.post('/api/register', (req, res) => {
     const { phone, password, refBy } = req.body;
     if (!phone || !password) {
@@ -39,7 +37,6 @@ app.post('/api/register', (req, res) => {
     res.json({ success: true, message: "Compte créé avec succès ! +800 FCFA de bonus.", balance: 800 });
 });
 
-// 2. Connexion
 app.post('/api/login', (req, res) => {
     const { phone, password } = req.body;
     const user = db.users[phone];
@@ -56,7 +53,6 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// 3. Soldes et packs d'un utilisateur
 app.get('/api/user/:phone', (req, res) => {
     const phone = req.params.phone;
     const user = db.users[phone];
@@ -71,7 +67,6 @@ app.get('/api/user/:phone', (req, res) => {
     });
 });
 
-// 4. Historique utilisateur
 app.get('/api/user/history/:phone', (req, res) => {
     const phone = req.params.phone;
     const userDeposits = db.deposits.filter(d => d.userPhone === phone);
@@ -84,7 +79,6 @@ app.get('/api/user/history/:phone', (req, res) => {
     });
 });
 
-// 5. Soumettre un dépôt
 app.post('/api/deposit', (req, res) => {
     const { userPhone, senderPhone, amount, method } = req.body;
     const newDeposit = {
@@ -100,7 +94,6 @@ app.post('/api/deposit', (req, res) => {
     res.json({ success: true, message: "Demande de dépôt enregistrée." });
 });
 
-// 6. Acheter un pack
 app.post('/api/buy-pack', (req, res) => {
     const { userPhone, name, price, dailyGain, percent } = req.body;
     const user = db.users[userPhone];
@@ -124,7 +117,6 @@ app.post('/api/buy-pack', (req, res) => {
     res.json({ success: true, depositBalance: user.depositBalance, packs: user.packs });
 });
 
-// 7. Soumettre un retrait
 app.post('/api/withdraw', (req, res) => {
     const { userPhone, amount, withdrawPhone } = req.body;
     const user = db.users[userPhone];
@@ -150,7 +142,6 @@ app.post('/api/withdraw', (req, res) => {
     res.json({ success: true, message: "Retrait pris en compte." });
 });
 
-// 8. Données Admin
 app.get('/api/admin/data', (req, res) => {
     res.json({
         deposits: db.deposits,
@@ -159,7 +150,7 @@ app.get('/api/admin/data', (req, res) => {
     });
 });
 
-// 9. Validation Dépôt + Versement des 17% (corrigé contre les espaces/+ dans l'URL)
+// Validation Dépôt + Parrainage à 25% (0.25)
 app.post('/api/admin/verify-deposit', (req, res) => {
     const { depositId, action } = req.body;
     const deposit = db.deposits.find(d => d.id == depositId);
@@ -175,13 +166,12 @@ app.post('/api/admin/verify-deposit', (req, res) => {
         if (userObj) {
             userObj.depositBalance += deposit.amount;
 
-            // Recherche du parrain en ignorant les espaces et les "+"
             if (userObj.sponsor && !userObj.firstDepositDone) {
                 const targetSponsor = cleanPhone(userObj.sponsor);
                 const sponsorKey = Object.keys(db.users).find(k => cleanPhone(k) === targetSponsor);
 
                 if (sponsorKey && db.users[sponsorKey]) {
-                    const commission = Math.round(deposit.amount * 0.17);
+                    const commission = Math.round(deposit.amount * 0.25); // Taux de parrainage à 25%
                     db.users[sponsorKey].withdrawableBalance += commission;
                     userObj.firstDepositDone = true;
                 }
@@ -194,7 +184,6 @@ app.post('/api/admin/verify-deposit', (req, res) => {
     res.json({ success: true, message: "Dépôt mis à jour." });
 });
 
-// 10. Validation Retrait
 app.post('/api/admin/verify-withdrawal', (req, res) => {
     const { withdrawalId, action } = req.body;
     const withdrawal = db.withdrawals.find(w => w.id == withdrawalId);
@@ -205,7 +194,6 @@ app.post('/api/admin/verify-withdrawal', (req, res) => {
     res.json({ success: true });
 });
 
-// 11. Simuler les gains de 24h
 app.post('/api/admin/trigger-daily-yield', (req, res) => {
     Object.values(db.users).forEach(user => {
         if (user.packs && user.packs.length > 0) {
