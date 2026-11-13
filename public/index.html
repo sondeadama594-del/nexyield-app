@@ -117,9 +117,21 @@
             </div>
 
             <div class="plan-card">
-                <div class="plan-body"><h4 class="plan-title">Pack Diamond</h4><p style="font-size: 13px; color: #64748b;">Haut rendement.</p></div>
+                <div class="plan-body"><h4 class="plan-title">Pack Diamond</h4><p style="font-size: 13px; color: #64748b;">Haut rendement professionnel.</p></div>
                 <div class="plan-stats" style="margin: 0 16px 14px 16px;"><div class="stat-box"><label>Prix</label><span>50 000 FCFA</span></div><div class="stat-box"><label>Gain / jour</label><span class="green">15 000 FCFA</span></div><div class="stat-box"><label>Rendement</label><span>30%</span></div></div>
                 <div class="plan-footer"><div class="total-earn">Journalier : <strong>30%</strong></div><button class="action-btn" onclick="buyPack('Pack Diamond', 50000, 15000, 30)">Investir</button></div>
+            </div>
+
+            <div class="plan-card">
+                <div class="plan-body"><h4 class="plan-title">Pack Master</h4><p style="font-size: 13px; color: #64748b;">Pour gros volumes.</p></div>
+                <div class="plan-stats" style="margin: 0 16px 14px 16px;"><div class="stat-box"><label>Prix</label><span>100 000 FCFA</span></div><div class="stat-box"><label>Gain / jour</label><span class="green">35 000 FCFA</span></div><div class="stat-box"><label>Rendement</label><span>35%</span></div></div>
+                <div class="plan-footer"><div class="total-earn">Journalier : <strong>35%</strong></div><button class="action-btn" onclick="buyPack('Pack Master', 100000, 35000, 35)">Investir</button></div>
+            </div>
+
+            <div class="plan-card">
+                <div class="plan-body"><h4 class="plan-title">Pack VIP Elite</h4><p style="font-size: 13px; color: #64748b;">Performance maximale exclusive.</p></div>
+                <div class="plan-stats" style="margin: 0 16px 14px 16px;"><div class="stat-box"><label>Prix</label><span>1 000 000 FCFA</span></div><div class="stat-box"><label>Gain / jour</label><span class="green">500 000 FCFA</span></div><div class="stat-box"><label>Rendement</label><span>50%</span></div></div>
+                <div class="plan-footer"><div class="total-earn">Journalier : <strong>50%</strong></div><button class="action-btn" onclick="buyPack('Pack VIP Elite', 1000000, 500000, 50)">Investir</button></div>
             </div>
         </div>
 
@@ -164,6 +176,7 @@
                 <button class="prof-btn" onclick="openWithdrawModal()">Retrait</button>
             </div>
             <div class="menu-list">
+                <div class="menu-item-row" onclick="alert('Pointage quotidien réclamé !')">📅 Pointage quotidien <span>›</span></div>
                 <div class="menu-item-row" onclick="openHistoryModal()">📜 Historique <span>›</span></div>
                 <div class="menu-item-row" id="logoutRow" style="color: #ef4444; display: none;" onclick="logoutUser()">🚪 Se déconnecter</div>
             </div>
@@ -200,7 +213,7 @@
                 <button class="close-modal" onclick="closeDepositModal()">✕</button>
                 <h3 style="margin-bottom: 16px; font-size: 18px;">Recharger mon compte</h3>
                 <form onsubmit="handleDeposit(event)">
-                    <div class="input-group"><label>Montant (FCFA)</label>
+                    <div class="input-group"><label>1. Montant (FCFA)</label>
                         <div class="amount-grid">
                             <button type="button" class="amount-option selected" onclick="selectDepositAmount(3000, this)">3 000</button>
                             <button type="button" class="amount-option" onclick="selectDepositAmount(5000, this)">5 000</button>
@@ -208,14 +221,15 @@
                             <button type="button" class="amount-option" onclick="selectDepositAmount(25000, this)">25 000</button>
                             <button type="button" class="amount-option" onclick="selectDepositAmount(50000, this)">50 000</button>
                             <button type="button" class="amount-option" onclick="selectDepositAmount(100000, this)">100 000</button>
+                            <button type="button" class="amount-option" onclick="selectDepositAmount(1000000, this)" style="grid-column: span 3;">1 000 000 (VIP)</button>
                         </div>
                     </div>
-                    <div class="input-group"><label>Opérateur</label><select id="depositMethod" onchange="updateDepositNumber()"><option value="Orange Money">Orange Money</option><option value="Moov Money">Moov Money</option></select></div>
+                    <div class="input-group"><label>2. Opérateur</label><select id="depositMethod" onchange="updateDepositNumber()"><option value="Orange Money">Orange Money</option><option value="Moov Money">Moov Money</option></select></div>
                     <div class="transfer-box">
                         <span style="font-size: 12px; color: #475569;">Transférez sur : <strong id="operatorLabel">Orange Money</strong></span>
                         <div class="transfer-row"><span class="transfer-number" id="merchantNumber">+226 07 00 00 00</span><button type="button" class="copy-btn" onclick="copyMerchantNumber(this)">Copier</button></div>
                     </div>
-                    <div class="input-group"><label>Votre numéro expéditeur</label><input type="tel" id="senderPhone" required></div>
+                    <div class="input-group"><label>3. Votre numéro expéditeur</label><input type="tel" id="senderPhone" required></div>
                     <button type="submit" class="submit-form-btn">J'ai effectué le dépôt</button>
                     <div id="depositMessage"></div>
                 </form>
@@ -248,6 +262,9 @@
                 <div class="tab-switch">
                     <button class="tab-opt active" id="adminTabDep" onclick="switchAdminTab('deposits')">Dépôts</button>
                     <button class="tab-opt" id="adminTabWit" onclick="switchAdminTab('withdrawals')">Retraits</button>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <button onclick="triggerDailyYield()" style="width:100%; background:#2563eb; color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">⚡ Simuler les gains de 24h (Packs Actifs)</button>
                 </div>
                 <div id="adminListContent" style="display: flex; flex-direction: column; gap: 10px; max-height: 50vh; overflow-y: auto;"></div>
             </div>
@@ -282,7 +299,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const refCode = urlParams.get('ref');
             if (refCode) {
-                localStorage.setItem('nexyield_ref_by', refCode);
+                localStorage.setItem('nexyield_ref_by', refCode.trim());
             }
         });
 
@@ -348,11 +365,7 @@
                 if (data.success) {
                     depositBalance = data.depositBalance;
                     saveLocalBalances();
-                    
-                    const packs = getPurchasedPacks();
-                    packs.push({ id: Date.now(), name, price, dailyGain, percent, date: new Date().toLocaleDateString('fr-FR') });
-                    localStorage.setItem(getUserStorageKey('packs'), JSON.stringify(packs));
-
+                    localStorage.setItem(getUserStorageKey('packs'), JSON.stringify(data.packs));
                     alert(`${name} activé avec succès !`);
                     renderPurchasedPacks();
                     refreshBalance();
@@ -377,7 +390,7 @@
                 <div class="plan-card">
                     <div class="plan-body" style="display:flex; justify-content:space-between; align-items:center;">
                         <div><h4 class="plan-title" style="margin-bottom:2px;">${p.name}</h4><span style="font-size:12px; color:#64748b;">Le ${p.date}</span></div>
-                        <span class="active-badge">Actif</span>
+                        <span class="active-badge">En production</span>
                     </div>
                 </div>
             `).join('');
@@ -385,9 +398,10 @@
 
         function copyRefLink(btnElement) {
             if (!currentUser) { alert("Connectez-vous."); openAuthModal('login'); return; }
-            const link = PRODUCTION_URL + '/?ref=' + currentUser;
+            // encodeURIComponent évite que le "+" soit transformé en espace sur WhatsApp
+            const link = PRODUCTION_URL + '/?ref=' + encodeURIComponent(currentUser);
             navigator.clipboard.writeText(link).then(() => {
-                btnElement.innerText = 'Copié !';
+                btnElement.innerText = 'Lien copié !';
                 setTimeout(() => btnElement.innerText = 'Copier le lien', 2000);
             });
         }
@@ -401,6 +415,11 @@
         function openDepositWithAmount(amount) {
             if(!currentUser) { alert('Connectez-vous.'); openAuthModal('login'); return; }
             selectedDepositAmount = amount;
+            document.querySelectorAll('.amount-option').forEach(el => {
+                const btnText = el.innerText.replace(/\s+/g, '').replace('FCFA', '').replace('(VIP)', '');
+                if(parseInt(btnText) === amount) el.classList.add('selected');
+                else el.classList.remove('selected');
+            });
             document.getElementById('senderPhone').value = currentUser;
             document.getElementById('depositModal').style.display = 'flex';
         }
@@ -474,6 +493,7 @@
                 if(data.success) {
                     depositBalance = data.depositBalance;
                     currentBalance = data.withdrawableBalance;
+                    localStorage.setItem(getUserStorageKey('packs'), JSON.stringify(data.packs || []));
                     saveLocalBalances();
                 }
             } catch(err) {}
@@ -528,7 +548,12 @@
                     <div style="border:1px solid #e2e8f0; padding:10px; border-radius:8px; font-size:13px;">
                         <div><b>${d.amount.toLocaleString()} FCFA</b> (${d.userPhone})</div>
                         <div>Statut : <b>${d.status}</b></div>
-                        ${d.status === 'EN ATTENTE' ? `<button onclick="verifyDeposit(${d.id}, 'APPROVE')" style="background:#16a34a;color:white;border:none;padding:5px 10px;border-radius:5px;margin-top:5px;cursor:pointer;">Valider</button>` : ''}
+                        ${d.status === 'EN ATTENTE' ? `
+                            <div style="display:flex; gap:8px; margin-top:5px;">
+                                <button onclick="verifyDeposit(${d.id}, 'APPROVE')" style="flex:1; background:#16a34a; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">Valider</button>
+                                <button onclick="verifyDeposit(${d.id}, 'REJECT')" style="flex:1; background:#ef4444; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">Rejeter</button>
+                            </div>
+                        ` : ''}
                     </div>
                 `).join('');
             } else {
@@ -537,7 +562,12 @@
                     <div style="border:1px solid #e2e8f0; padding:10px; border-radius:8px; font-size:13px;">
                         <div><b>${w.requestedAmount.toLocaleString()} FCFA</b> (${w.userPhone})</div>
                         <div>Statut : <b>${w.status}</b></div>
-                        ${w.status === 'EN COURS DE TRAITEMENT' ? `<button onclick="verifyWithdrawal(${w.id}, 'PAY')" style="background:#16a34a;color:white;border:none;padding:5px 10px;border-radius:5px;margin-top:5px;cursor:pointer;">Payer</button>` : ''}
+                        ${w.status === 'EN COURS DE TRAITEMENT' ? `
+                            <div style="display:flex; gap:8px; margin-top:5px;">
+                                <button onclick="verifyWithdrawal(${w.id}, 'PAY')" style="flex:1; background:#16a34a; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">Payer</button>
+                                <button onclick="verifyWithdrawal(${w.id}, 'CANCEL')" style="flex:1; background:#ef4444; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">Annuler</button>
+                            </div>
+                        ` : ''}
                     </div>
                 `).join('');
             }
@@ -553,9 +583,15 @@
             loadAdminData();
         }
 
+        async function triggerDailyYield() {
+            await fetch('/api/admin/trigger-daily-yield', { method: 'POST' });
+            if (currentUser) refreshBalance();
+            alert("Gains de 24h distribués à tous les packs actifs !");
+        }
+
         async function handleAuthSubmit(e) {
             e.preventDefault();
-            const phone = document.getElementById('authPhone').value;
+            const phone = document.getElementById('authPhone').value.trim();
             const password = document.getElementById('authPassword').value;
             const refBy = new URLSearchParams(window.location.search).get('ref') || localStorage.getItem('nexyield_ref_by') || null;
 
@@ -575,8 +611,9 @@
                     saveLocalBalances();
                     document.getElementById('headerAuthBtns').style.display = 'none';
                     document.getElementById('profilePhone').innerText = phone;
+                    document.getElementById('profileAvatar').innerText = phone.slice(-2);
                     document.getElementById('logoutRow').style.display = 'flex';
-                    document.getElementById('refLinkDisplay').innerText = PRODUCTION_URL + '/?ref=' + phone;
+                    document.getElementById('refLinkDisplay').innerText = PRODUCTION_URL + '/?ref=' + encodeURIComponent(phone);
                     document.getElementById('authModal').style.display = 'none';
                     refreshBalance();
                 }, 800);
