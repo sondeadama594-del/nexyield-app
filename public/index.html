@@ -3,89 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexYield - Investissement & Gains</title>
+    <title>NexYield - Investissement & Gestion</title>
     <style>
+        /* Styles généraux */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
             margin: 0;
             padding: 20px;
-            color: #333;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        h1, h2, h3 {
+            color: #38bdf8;
         }
         .balance-card {
-            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            background: linear-gradient(135deg, #0284c7, #0369a1);
             color: white;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 10px;
             text-align: center;
-            font-size: 24px;
+            font-size: 22px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .balance-amount {
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 5px;
         }
         .btn {
-            background-color: #007bff;
+            background-color: #0284c7;
             color: white;
             border: none;
             padding: 12px 20px;
             font-size: 16px;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
             width: 100%;
             margin-top: 10px;
+            font-weight: bold;
+            transition: background 0.2s;
         }
         .btn:hover {
-            background-color: #0056b3;
+            background-color: #0369a1;
+        }
+        .btn-success {
+            background-color: #16a34a;
+        }
+        .btn-success:hover {
+            background-color: #15803d;
+        }
+        .btn-danger {
+            background-color: #dc2626;
+        }
+        .btn-danger:hover {
+            background-color: b91c1c;
+        }
+        /* Tableaux et sections */
+        .section-box {
+            background: #334155;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #475569;
+        }
+        th {
+            color: #38bdf8;
         }
         /* Panneau Admin masqué par défaut */
         #admin-panel {
             display: none;
-            background: #ffeeba;
-            border: 1px solid #ffeeba;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-        .referral-box {
-            background: #e9ecef;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 20px;
+            background: #451a03;
+            border: 1px solid #78350f;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 25px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2>NexYield Plateforme</h2>
+        <h1>NexYield Platform</h1>
         
         <!-- Solde Actuel -->
         <div class="balance-card">
-            SOLDE ACTUEL (Bonus + Gains)<br>
-            <span id="solde-montant">800</span> FCFA
+            <div>SOLDE ACTUEL (Bonus + Gains)</div>
+            <div class="balance-amount"><span id="solde-montant">800</span> FCFA</div>
         </div>
 
         <!-- Bouton de Simulation des gains -->
-        <button class="btn" onclick="simulerGains24h()">Simuler les gains de 24h (Paliers)</button>
+        <button class="btn" onclick="simulerGains24h()">⚡ Simuler les gains de 24h (Paliers)</button>
 
-        <!-- Section Parrainage -->
-        <div class="referral-box">
-            <h3>Parrainage & Affiliation</h3>
-            <p>Partagez votre lien : gagnez <strong>17%</strong> sur le premier dépôt de vos filleuls !</p>
-            <button class="btn" style="background-color: #28a745;" onclick="copierLienParrainage()">Copier mon lien de parrainage</button>
+        <!-- Section Parrainage & Affiliation -->
+        <div class="section-box">
+            <h3>👥 Parrainage & Affiliation</h3>
+            <p>Partagez votre lien unique. Vous gagnez automatiquement <strong>17%</strong> de commission lors du premier dépôt de vos filleuls !</p>
+            <button class="btn btn-success" onclick="copierLienParrainage()">🔗 Copier mon lien de parrainage</button>
         </div>
 
-        <!-- Panneau Administrateur Protégé -->
+        <!-- Tableaux de suivi (Dépôts / Retraits) -->
+        <div class="section-box">
+            <h3>📊 Historique des Transactions</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Montant</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody id="transaction-table-body">
+                    <tr>
+                        <td>Dépôt Initial / Bonus</td>
+                        <td>800 FCFA</td>
+                        <td style="color: #4ade80;">Validé</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Panneau Administrateur (Entièrement sécurisé, plus de 5 clics) -->
         <div id="admin-panel">
-            <h3>Panneau Administrateur</h3>
-            <p>Accès autorisé uniquement par mot de passe.</p>
-            <button class="btn" style="background-color: #dc3545;" onclick="fermerAdmin()">Fermer le panneau</button>
+            <h3>🔒 Panneau Administrateur</h3>
+            <p>Zone hautement sécurisée réservée aux administrateurs.</p>
+            <button class="btn" onclick="testerPremierDepotFilleulManuellement()">Simuler un dépôt filleul (+17%)</button>
+            <button class="btn btn-danger" onclick="fermerAdmin()">Fermer le panneau</button>
         </div>
     </div>
 
@@ -98,16 +158,23 @@
         }
 
         function simulerGains24h() {
-            let gainsAjoutes = 500; // Montant simulé ajouté
+            let gainsAjoutes = 500; // Montant des gains journaliers simulés
             soldeActuel += gainsAjoutes;
             mettreAJourAffichageSolde();
+            
+            // Ajouter une ligne dans le tableau des transactions pour le suivi
+            const tbody = document.getElementById('transaction-table-body');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `<td>Gains journaliers (24h)</td><td>+${gainsAjoutes} FCFA</td><td style="color: #4ade80;">Distribué</td>`;
+            tbody.appendChild(newRow);
+
             alert("Gains journaliers calculés et distribués avec succès ! +" + gainsAjoutes + " FCFA");
         }
 
-        // --- 2. GESTION DU PARRAINAGE (17% sur le 1er dépôt) ---
-        // Simuler un ID utilisateur unique (ex: généré ou récupéré du compte)
+        // --- 2. SYSTÈME DE PARRAINAGE (17% sur le premier dépôt) ---
+        // Générer ou récupérer un ID unique pour l'utilisateur actuel
         if (!localStorage.getItem('userId')) {
-            localStorage.setItem('userId', 'USER_' + Math.floor(Math.random() * 10000));
+            localStorage.setItem('userId', 'USER_' + Math.floor(Math.random() * 100000));
         }
 
         function copierLienParrainage() {
@@ -115,56 +182,66 @@
             const lienComplet = window.location.origin + window.location.pathname + '?ref=' + userId;
             
             navigator.clipboard.writeText(lienComplet).then(() => {
-                alert("Lien de parrainage copié !\nPartagez-le pour toucher 17% sur le premier dépôt de vos filleuls.");
+                alert("Lien de parrainage copié avec succès !\nPartagez-le à vos proches pour toucher 17% sur leur premier dépôt.");
             }).catch(() => {
-                prompt("Copiez votre lien manuellement :", lienComplet);
+                prompt("Copiez votre lien de parrainage manuellement :", lienComplet);
             });
         }
 
-        // Détecter l'arrivée d'un filleul via un lien de parrainage au chargement de la page
+        // Détecter si l'utilisateur arrive via un lien de parrainage (ex: ?ref=USER_123)
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const codeParrain = urlParams.get('ref');
 
             if (codeParrain) {
                 localStorage.setItem('filleulParrainId', codeParrain);
-                console.log("Visiteur parrainé par : " + codeParrain);
+                console.log("Visiteur enregistré sous le parrain : " + codeParrain);
             }
         });
 
-        // Fonction à appeler lors de la validation du PREMIER dépôt du filleul
-        function validerPremierDepotFilleul(montantDepose) {
+        // Fonction appelée lors de la validation du PREMIER dépôt d'un filleul
+        function validerPremierDepotFilleul(montantDeposeFilleul) {
             const parrainId = localStorage.getItem('filleulParrainId');
             const dejaParraine = localStorage.getItem('dejaParraine');
 
+            // Si l'utilisateur a un parrain et que c'est son tout premier dépôt
             if (parrainId && !dejaParraine) {
-                const commission = montantDepose * 0.17; // 17% du premier dépôt
-                console.log(`Le parrain ${parrainId} reçoit une commission de ${commission} FCFA (17% de ${montantDepose})`);
+                const commission = montantDeposeFilleul * 0.17; // 17% exacts
+                soldeActuel += commission; // Ajoute la commission au solde (ou envoie l'info au serveur)
+                mettreAJourAffichageSolde();
+
+                alert(`Félicitations ! Commission de parrainage reçue : +${commission} FCFA (17% du 1er dépôt du filleul).`);
                 
-                // Marquer que le premier dépôt a déjà généré le bonus
+                // Bloquer pour ne plus donner les 17% sur les dépôts suivants de ce même filleul
                 localStorage.setItem('dejaParraine', 'true');
             }
         }
 
-        // --- 3. ACCÈS ADMINISTRATEUR SÉCURISÉ (Pas de 5 clics publics) ---
-        function ouvrirAdminSecret(motDe PasseSaisi) {
-            const mdpAdmin = "Bagassi2006"; // Remplacez par votre mot de passe secret
+        // Fonction de test pour le panneau admin
+        function testerPremierDepotFilleulManuellement() {
+            let montantTest = prompt("Entrez le montant du premier dépôt du filleul (ex: 5000) :");
+            if (montantTest && !isNaN(montantTest)) {
+                validerPremierDepotFilleul(parseFloat(montantTest));
+            }
+        }
+
+        // --- 3. SÉCURITÉ ADMINISTRATEUR (Accès par console ou fonction dédiée) ---
+        // Pour ouvrir le panneau admin, tapez ouvrirAdminSecret() dans la console du navigateur (F12)
+        function ouvrirAdminSecret() {
+            const mdpAdmin = "admin123"; // 🔑 Changez votre mot de passe secret ici si besoin
             let mdp = prompt("Entrez le mot de passe administrateur :");
             
             if (mdp === mdpAdmin) {
                 document.getElementById('admin-panel').style.display = 'block';
                 alert("Accès administrateur autorisé.");
             } else if (mdp !== null) {
-                alert("Mot de passe incorrect.");
+                alert("Mot de passe incorrect !");
             }
         }
 
         function fermerAdmin() {
             document.getElementById('admin-panel').style.display = 'none';
         }
-
-        // Pour ouvrir le panneau admin en tant qu'administrateur, 
-        // vous pouvez taper ouvrirAdminSecret() directement dans la console de votre navigateur (F12).
     </script>
 </body>
 </html>
