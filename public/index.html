@@ -420,16 +420,14 @@
         let adminCurrentTab = 'deposits';
         let historyCurrentTab = 'deposits';
 
+        // Gestion propre de l'URL de parrainage (sans caractères spéciaux buggés)
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            let refCode = urlParams.get('ref');
+            const refCode = urlParams.get('ref');
             if (refCode) {
-                // S'assurer que le + encodé en espace ou conservé est géré correctement
-                refCode = refCode.trim().replace(/ /g, '+');
-                if(!refCode.startsWith('+') && /^\d+$/.test(refCode)) {
-                    refCode = '+' + refCode;
-                }
-                localStorage.setItem('nexyield_ref_by', refCode);
+                // Retrouver le vrai numéro associé au code de parrainage stocké
+                const realPhone = localStorage.getItem(`nexyield_code_${refCode}`) || refCode;
+                localStorage.setItem('nexyield_ref_by', realPhone);
             }
         });
 
@@ -558,15 +556,24 @@
             `).join('');
         }
 
+        function getOrCreateUserRefCode(phone) {
+            let code = localStorage.getItem(`nexyield_user_code_${phone}`);
+            if (!code) {
+                code = 'NX' + Math.floor(100000 + Math.random() * 900000);
+                localStorage.setItem(`nexyield_user_code_${phone}`, code);
+                localStorage.setItem(`nexyield_code_${code}`, phone);
+            }
+            return code;
+        }
+
         function copyRefLink(btnElement) {
             if (!currentUser) {
                 alert("Connectez-vous pour obtenir votre lien d'invitation.");
                 openAuthModal('login');
                 return;
             }
-            // Utiliser encodeURIComponent pour encoder correctement le '+' en '%2B' pour qu'il passe partout sur WhatsApp/Navigateurs
-            const encodedUser = encodeURIComponent(currentUser);
-            const link = window.location.origin + window.location.pathname + '?ref=' + encodedUser;
+            const userCode = getOrCreateUserRefCode(currentUser);
+            const link = window.location.origin + window.location.pathname + '?ref=' + userCode;
             
             navigator.clipboard.writeText(link).then(() => {
                 btnElement.innerText = 'Lien copié !';
@@ -942,7 +949,9 @@
                     syncUserBalancesToUI();
                     renderPurchasedPacks();
                     document.getElementById('logoutRow').style.display = 'flex';
-                    document.getElementById('refLinkDisplay').innerText = window.location.origin + window.location.pathname + '?ref=' + encodeURIComponent(phone);
+                    
+                    const userCode = getOrCreateUserRefCode(phone);
+                    document.getElementById('refLinkDisplay').innerText = window.location.origin + window.location.pathname + '?ref=' + userCode;
                     document.getElementById('authModal').style.display = 'none';
                 }, 800);
             }
