@@ -830,7 +830,9 @@
             listDiv.innerHTML = 'Chargement...';
 
             if(adminCurrentTab === 'deposits') {
-                const res = await fetch('/api/admin/deposits');
+                const const res = await fetch('/api/admin/data');
+const data = await res.json();
+const deposits = data.deposits; // On récupère la liste des dépôts depuis l'objet global du serveur
                 const deposits = await res.json();
                 if(deposits.length === 0) { listDiv.innerHTML = '<p style="color:#64748b; font-size:13px;">Aucun dépôt.</p>'; return; }
                 listDiv.innerHTML = deposits.map(d => `
