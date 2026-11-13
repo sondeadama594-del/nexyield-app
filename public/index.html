@@ -751,5 +751,16 @@
             switchTab('accueil', document.querySelector('.nav-item'));
         }
     </script>
+    <script>
+  function ouvrirAdminSecret() {
+      let mdp = prompt("Entrez le mot de passe administrateur :");
+      if (mdp === "Bagassi2006") { // Remplacez MON_CODE_SECRET par votre vrai mot de passe
+          document.getElementById('admin-panel').style.display = 'block';
+          alert("Accès autorisé !");
+      } else if (mdp !== null) {
+          alert("Mot de passe incorrect !");
+      }
+  }
+</script>
 </body>
 </html>
