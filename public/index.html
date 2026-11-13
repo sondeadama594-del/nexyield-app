@@ -3,764 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexYield - Investissement & Production</title>
+    <title>NexYield - Investissement & Gains</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: #f1f5f9; color: #1e293b; display: flex; justify-content: center; min-height: 100vh; }
-
-        .app-container { width: 100%; max-width: 480px; background: #ffffff; display: flex; flex-direction: column; min-height: 100vh; position: relative; box-shadow: 0 0 25px rgba(0,0,0,0.08); padding-bottom: 75px; }
-
-        .app-header { padding: 18px 20px; background: #ffffff; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
-        .logo { font-size: 21px; font-weight: 800; color: #0f172a; cursor: pointer; user-select: none; }
-        .logo span { color: #ef4444; }
-        .auth-pill { display: flex; gap: 8px; }
-        .pill-btn { padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; }
-        .pill-login { background: #f1f5f9; color: #475569; }
-        .pill-register { background: #ef4444; color: white; }
-
-        .page-content { flex: 1; padding: 20px; overflow-y: auto; display: none; }
-        .page-content.active { display: block; }
-
-        .banner-bonus { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; padding: 22px; border-radius: 18px; margin-bottom: 22px; }
-        .banner-bonus h3 { font-size: 14px; margin-bottom: 4px; color: #94a3b8; font-weight: 500; }
-        .banner-bonus .amount { font-size: 30px; font-weight: 800; color: #38bdf8; }
-
-        .plan-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; margin-bottom: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .plan-body { padding: 16px; padding-bottom: 10px; }
-        .plan-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; color: #0f172a; }
-        .plan-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #f1f5f9; }
-        .stat-box label { font-size: 11px; color: #64748b; display: block; margin-bottom: 2px; }
-        .stat-box span { font-size: 14px; font-weight: 700; color: #0f172a; }
-        .stat-box span.green { color: #16a34a; }
-        .plan-footer { display: flex; justify-content: space-between; align-items: center; padding: 0 16px 16px 16px; }
-        .total-earn { font-size: 12px; color: #64748b; }
-        .total-earn strong { color: #0f172a; }
-        .action-btn { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; }
-
-        .profile-card { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 24px; border-radius: 20px; margin-bottom: 18px; }
-        .profile-info { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .avatar { width: 54px; height: 54px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; }
-        .balance-box { background: rgba(0,0,0,0.18); padding: 14px 16px; border-radius: 14px; }
-        .profile-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .prof-btn { background: #f8fafc; border: 1px solid #e2e8f0; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 15px; color: #0f172a; cursor: pointer; text-align: center; }
-        .menu-list { background: white; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; }
-        .menu-item-row { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 14px; font-weight: 500; }
-
-        nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
-        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; font-size: 11px; cursor: pointer; font-weight: 600; }
-        .nav-item.active { color: #ef4444; }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.65); justify-content: center; align-items: flex-end; z-index: 1000; }
-        .modal-card { background: white; width: 100%; max-width: 480px; padding: 26px 20px; border-radius: 24px 24px 0 0; position: relative; max-height: 90vh; overflow-y: auto; }
-        .close-modal { position: absolute; top: 18px; right: 18px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; color: #475569; display: flex; align-items: center; justify-content: center; }
-        .tab-switch { display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; margin-bottom: 20px; }
-        .tab-opt { flex: 1; padding: 10px; border: none; background: none; font-weight: 700; font-size: 14px; border-radius: 8px; cursor: pointer; color: #64748b; }
-        .tab-opt.active { background: white; color: #0f172a; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        
-        .input-group { margin-bottom: 16px; }
-        .input-group label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; }
-        .input-group input, .input-group select { width: 100%; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 12px; font-size: 14px; outline: none; background: white; color: #0f172a; }
-        .submit-form-btn { width: 100%; background: #ef4444; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 8px; }
-        #formMessage, #depositMessage, #withdrawMessage { margin-top: 12px; text-align: center; font-size: 13px; font-weight: 700; }
-
-        .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
-        .amount-option { padding: 12px 6px; border: 1.5px solid #e2e8f0; border-radius: 12px; background: #f8fafc; font-weight: 700; font-size: 12px; color: #0f172a; cursor: pointer; text-align: center; }
-        .amount-option.selected { border-color: #ef4444; background: #fef2f2; color: #ef4444; }
-
-        .transfer-box { background: #f8fafc; border: 1.5px dashed #94a3b8; border-radius: 14px; padding: 14px; margin-bottom: 16px; }
-        .transfer-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; background: white; padding: 10px 12px; border-radius: 10px; border: 1px solid #e2e8f0; }
-        .transfer-number { font-size: 16px; font-weight: 800; color: #0f172a; }
-        .copy-btn { background: #0f172a; color: white; border: none; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .balance-card {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        /* Panneau Admin masqué par défaut */
+        #admin-panel {
+            display: none;
+            background: #ffeeba;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .referral-box {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-
-        <header class="app-header">
-            <div class="logo">Nex<span>Yield</span></div>
-            <div class="auth-pill" id="headerAuthBtns">
-                <button class="pill-btn pill-login" onclick="openAuthModal('login')">Connexion</button>
-                <button class="pill-btn pill-register" onclick="openAuthModal('register')">S'inscrire</button>
-            </div>
-        </header>
-
-        <!-- ACCUEIL -->
-        <div id="tab-accueil" class="page-content active">
-            <div class="banner-bonus">
-                <h3>Bonus de Bienvenue</h3>
-                <div class="amount">800 FCFA</div>
-                <p style="font-size: 12px; color: #cbd5e1; margin-top: 5px;">Crédité instantanément à l'inscription</p>
-            </div>
-            
-            <h3 style="margin-bottom: 15px; font-size: 18px;">Opportunités d'investissement</h3>
-            
-            <!-- Pack Bronze -->
-            <div class="plan-card">
-                <div class="plan-body">
-                    <h4 class="plan-title">Pack Bronze</h4>
-                    <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Idéal pour démarrer.</p>
-                </div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>3 000 FCFA</span></div>
-                    <div class="stat-box"><label>Gain / jour</label><span class="green">600 FCFA</span></div>
-                    <div class="stat-box"><label>Rendement</label><span>20%</span></div>
-                </div>
-                <div class="plan-footer">
-                    <div class="total-earn">Journalier : <strong>20%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(3000)">Investir</button>
-                </div>
-            </div>
-
-            <!-- Pack Argent -->
-            <div class="plan-card">
-                <div class="plan-body">
-                    <h4 class="plan-title">Pack Argent</h4>
-                    <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Rendement supérieur.</p>
-                </div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>5 000 FCFA</span></div>
-                    <div class="stat-box"><label>Gain / jour</label><span class="green">1 050 FCFA</span></div>
-                    <div class="stat-box"><label>Rendement</label><span>21%</span></div>
-                </div>
-                <div class="plan-footer">
-                    <div class="total-earn">Journalier : <strong>21%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(5000)">Investir</button>
-                </div>
-            </div>
-
-            <!-- Pack Or -->
-            <div class="plan-card">
-                <div class="plan-body">
-                    <h4 class="plan-title">Pack Or</h4>
-                    <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Pour investisseurs actifs.</p>
-                </div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>10 000 FCFA</span></div>
-                    <div class="stat-box"><label>Gain / jour</label><span class="green">2 300 FCFA</span></div>
-                    <div class="stat-box"><label>Rendement</label><span>23%</span></div>
-                </div>
-                <div class="plan-footer">
-                    <div class="total-earn">Journalier : <strong>23%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(10000)">Investir</button>
-                </div>
-            </div>
-
-            <!-- Pack Platine -->
-            <div class="plan-card">
-                <div class="plan-body">
-                    <h4 class="plan-title">Pack Platine</h4>
-                    <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Niveau supérieur.</p>
-                </div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>25 000 FCFA</span></div>
-                    <div class="stat-box"><label>Gain / jour</label><span class="green">6 250 FCFA</span></div>
-                    <div class="stat-box"><label>Rendement</label><span>25%</span></div>
-                </div>
-                <div class="plan-footer">
-                    <div class="total-earn">Journalier : <strong>25%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(25000)">Investir</button>
-                </div>
-            </div>
-
-            <!-- Pack Diamond -->
-            <div class="plan-card">
-                <div class="plan-body">
-                    <h4 class="plan-title">Pack Diamond</h4>
-                    <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Haut rendement professionnel.</p>
-                </div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>50 000 FCFA</span></div>
-                    <div class="stat-box"><label>Gain / jour</label><span class="green">15 000 FCFA</span></div>
-                    <div class="stat-box"><label>Rendement</label><span>30%</span></div>
-                </div>
-                <div class="plan-footer">
-                    <div class="total-earn">Journalier : <strong>30%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(50000)">Investir</button>
-                </div>
-            </div>
-
-            <!-- Pack Master -->
-            <div class="plan-card">
-                <div class="plan-body">
-                    <h4 class="plan-title">Pack Master</h4>
-                    <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Pour gros volumes.</p>
-                </div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>100 000 FCFA</span></div>
-                    <div class="stat-box"><label>Gain / jour</label><span class="green">35 000 FCFA</span></div>
-                    <div class="stat-box"><label>Rendement</label><span>35%</span></div>
-                </div>
-                <div class="plan-footer">
-                    <div class="total-earn">Journalier : <strong>35%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(100000)">Investir</button>
-                </div>
-            </div>
-
-            <!-- Pack VIP Elite -->
-            <div class="plan-card">
-                <div class="plan-body">
-                    <h4 class="plan-title">Pack VIP Elite</h4>
-                    <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Performance maximale exclusive.</p>
-                </div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>1 000 000 FCFA</span></div>
-                    <div class="stat-box"><label>Gain / jour</label><span class="green">500 000 FCFA</span></div>
-                    <div class="stat-box"><label>Rendement</label><span>50%</span></div>
-                </div>
-                <div class="plan-footer">
-                    <div class="total-earn">Journalier : <strong>50%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(1000000)">Investir</button>
-                </div>
-            </div>
+    <div class="container">
+        <h2>NexYield Plateforme</h2>
+        
+        <!-- Solde Actuel -->
+        <div class="balance-card">
+            SOLDE ACTUEL (Bonus + Gains)<br>
+            <span id="solde-montant">800</span> FCFA
         </div>
 
-        <!-- LIGNES -->
-        <div id="tab-lignes" class="page-content">
-            <h3 style="margin-bottom: 15px; font-size: 18px;">Lignes de production</h3>
-            <p style="font-size: 14px; color: #64748b;">Consultez l'onglet Accueil pour choisir et souscrire directement à vos packs.</p>
+        <!-- Bouton de Simulation des gains -->
+        <button class="btn" onclick="simulerGains24h()">Simuler les gains de 24h (Paliers)</button>
+
+        <!-- Section Parrainage -->
+        <div class="referral-box">
+            <h3>Parrainage & Affiliation</h3>
+            <p>Partagez votre lien : gagnez <strong>17%</strong> sur le premier dépôt de vos filleuls !</p>
+            <button class="btn" style="background-color: #28a745;" onclick="copierLienParrainage()">Copier mon lien de parrainage</button>
         </div>
 
-        <!-- ÉQUIPE -->
-        <div id="tab-equipe" class="page-content">
-            <h3 style="margin-bottom: 15px; font-size: 18px;">Parrainage & Équipe</h3>
-            <div class="banner-bonus" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">
-                <h3>Lien d'invitation</h3>
-                <p id="refLinkDisplay" style="font-size: 14px; margin: 8px 0; word-break: break-all;">Connectez-vous pour voir votre lien</p>
-                <button style="background: white; color: #1d4ed8; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px;" onclick="copyRefLink(this)">Copier le lien</button>
-            </div>
+        <!-- Panneau Administrateur Protégé -->
+        <div id="admin-panel">
+            <h3>Panneau Administrateur</h3>
+            <p>Accès autorisé uniquement par mot de passe.</p>
+            <button class="btn" style="background-color: #dc3545;" onclick="fermerAdmin()">Fermer le panneau</button>
         </div>
-
-        <!-- PROFIL -->
-        <div id="tab-profil" class="page-content">
-            <div class="profile-card">
-                <div class="profile-info">
-                    <div class="avatar" id="profileAvatar">U</div>
-                    <div>
-                        <h4 id="profileName" style="font-size: 16px; margin-bottom: 2px;">Utilisateur</h4>
-                        <p id="profilePhone" style="font-size: 13px; opacity: 0.85;">Non connecté</p>
-                    </div>
-                </div>
-                <div class="balance-box">
-                    <span style="font-size: 11px; opacity: 0.85; display: block;">SOLDE ACTUEL (Bonus + Gains)</span>
-                    <strong id="profileBalance" style="font-size: 24px;">0 FCFA</strong>
-                </div>
-            </div>
-
-            <div class="profile-actions">
-                <button class="prof-btn" onclick="openDepositModal()">Dépôt</button>
-                <button class="prof-btn" onclick="openWithdrawModal()">Retrait</button>
-            </div>
-
-            <div class="menu-list">
-                <div class="menu-item-row" onclick="alert('Pointage quotidien réclamé !')">📅 Pointage quotidien <span>›</span></div>
-                <div class="menu-item-row" onclick="openHistoryModal()">📜 Historique <span>›</span></div>
-                <div class="menu-item-row" onclick="alert('Sécurité active')">🔒 Sécurité du compte <span>›</span></div>
-                <div class="menu-item-row" id="logoutRow" style="color: #ef4444; display: none;" onclick="logoutUser()">🚪 Se déconnecter</div>
-            </div>
-        </div>
-
-        <!-- Navigation Inférieure -->
-        <nav>
-            <button class="nav-item active" onclick="switchTab('accueil', this)">Accueil</button>
-            <button class="nav-item" onclick="switchTab('lignes', this)">Lignes</button>
-            <button class="nav-item" onclick="switchTab('equipe', this)">Équipe</button>
-            <button class="nav-item" onclick="switchTab('profil', this)">Profil</button>
-        </nav>
-
-        <!-- Modale Auth -->
-        <div id="authModal" class="modal">
-            <div class="modal-card">
-                <button class="close-modal" onclick="closeAuthModal()">✕</button>
-                <div class="tab-switch">
-                    <button class="tab-opt active" id="modalTabLogin" onclick="switchAuthMode('login')">Connexion</button>
-                    <button class="tab-opt" id="modalTabRegister" onclick="switchAuthMode('register')">Créer un compte</button>
-                </div>
-                <form id="authForm" onsubmit="handleAuthSubmit(event)">
-                    <div class="input-group">
-                        <label>Numéro de téléphone</label>
-                        <input type="tel" id="authPhone" placeholder="+226 XXXXXXXX" required>
-                    </div>
-                    <div class="input-group">
-                        <label>Mot de passe</label>
-                        <input type="password" id="authPassword" placeholder="Votre mot de passe" required>
-                    </div>
-                    <button type="submit" class="submit-form-btn" id="submitBtnText">Se connecter</button>
-                    <div id="formMessage"></div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modale Dépôt -->
-        <div id="depositModal" class="modal">
-            <div class="modal-card">
-                <button class="close-modal" onclick="closeDepositModal()">✕</button>
-                <h3 style="margin-bottom: 16px; font-size: 18px;">Recharger mon compte</h3>
-                <form onsubmit="handleDeposit(event)">
-                    <div class="input-group">
-                        <label>1. Montant sélectionné (FCFA)</label>
-                        <div class="amount-grid">
-                            <button type="button" class="amount-option selected" onclick="selectDepositAmount(3000, this)">3 000</button>
-                            <button type="button" class="amount-option" onclick="selectDepositAmount(5000, this)">5 000</button>
-                            <button type="button" class="amount-option" onclick="selectDepositAmount(10000, this)">10 000</button>
-                            <button type="button" class="amount-option" onclick="selectDepositAmount(25000, this)">25 000</button>
-                            <button type="button" class="amount-option" onclick="selectDepositAmount(50000, this)">50 000</button>
-                            <button type="button" class="amount-option" onclick="selectDepositAmount(100000, this)">100 000</button>
-                            <button type="button" class="amount-option" onclick="selectDepositAmount(1000000, this)" style="grid-column: span 3;">1 000 000 (VIP)</button>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label>2. Opérateur Mobile Money</label>
-                        <select id="depositMethod" onchange="updateDepositNumber()">
-                            <option value="Orange Money">Orange Money</option>
-                            <option value="Moov Money">Moov Money</option>
-                        </select>
-                    </div>
-                    <div class="transfer-box">
-                        <span style="font-size: 12px; color: #475569; display: block;">Transférez sur ce numéro (<strong id="operatorLabel">Orange Money</strong>) :</span>
-                        <div class="transfer-row">
-                            <span class="transfer-number" id="merchantNumber">+226 07 00 00 00</span>
-                            <button type="button" class="copy-btn" onclick="copyMerchantNumber(this)">Copier</button>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label>3. Votre numéro expéditeur</label>
-                        <input type="tel" id="senderPhone" placeholder="+226 XXXXXXXX" required>
-                    </div>
-                    <button type="submit" class="submit-form-btn">J'ai effectué le dépôt</button>
-                    <div id="depositMessage"></div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modale Retrait -->
-        <div id="withdrawModal" class="modal">
-            <div class="modal-card">
-                <button class="close-modal" onclick="closeWithdrawModal()">✕</button>
-                <h3 style="margin-bottom: 16px; font-size: 18px;">Demande de Retrait</h3>
-                <form onsubmit="handleWithdraw(event)">
-                    <div class="input-group">
-                        <label>Montant à retirer (FCFA)</label>
-                        <input type="number" id="withdrawAmount" placeholder="Min. 1 200 FCFA" min="1200" oninput="calculateWithdrawFee()" required>
-                    </div>
-                    <div style="background: #f8fafc; padding: 12px; border-radius: 10px; margin-bottom: 15px; font-size: 13px; color: #475569;">
-                        <div>Frais de retrait (10%) : <strong id="feeText" style="color: #ef4444;">0 FCFA</strong></div>
-                        <div style="margin-top: 4px;">Montant net reçu : <strong id="netText" style="color: #16a34a;">0 FCFA</strong></div>
-                    </div>
-                    <div class="input-group">
-                        <label>Numéro Mobile Money de réception</label>
-                        <input type="tel" id="withdrawPhone" placeholder="+226 XXXXXXXX" required>
-                    </div>
-                    <button type="submit" class="submit-form-btn" id="withdrawBtn">Confirmer le retrait</button>
-                    <div id="withdrawMessage"></div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modale Admin -->
-        <div id="adminModal" class="modal">
-            <div class="modal-card">
-                <button class="close-modal" onclick="document.getElementById('adminModal').style.display='none'">✕</button>
-                <h3 style="margin-bottom: 10px; font-size: 18px;">Panneau Administrateur</h3>
-                <div class="tab-switch">
-                    <button class="tab-opt active" id="adminTabDep" onclick="switchAdminTab('deposits')">Dépôts</button>
-                    <button class="tab-opt" id="adminTabWit" onclick="switchAdminTab('withdrawals')">Retraits</button>
-                </div>
-                <div style="margin-bottom: 12px;">
-                    <button onclick="triggerDailyYield()" style="width:100%; background:#2563eb; color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">⚡ Simuler les gains de 24h (Paliers)</button>
-                </div>
-                <div id="adminListContent" style="display: flex; flex-direction: column; gap: 10px; max-height: 50vh; overflow-y: auto;"></div>
-            </div>
-        </div>
-
-        <!-- Modale Historique -->
-        <div id="historyModal" class="modal">
-            <div class="modal-card">
-                <button class="close-modal" onclick="document.getElementById('historyModal').style.display='none'">✕</button>
-                <h3 style="margin-bottom: 16px; font-size: 18px;">Mon Historique</h3>
-                <div class="tab-switch">
-                    <button class="tab-opt active" id="histTabDep" onclick="switchHistoryTab('deposits')">Dépôts</button>
-                    <button class="tab-opt" id="histTabWit" onclick="switchHistoryTab('withdrawals')">Retraits</button>
-                </div>
-                <div id="historyListContent" style="display: flex; flex-direction: column; gap: 10px; max-height: 50vh; overflow-y: auto;"></div>
-            </div>
-        </div>
-
     </div>
 
     <script>
-        let currentMode = 'login';
-        let currentUser = null;
-        let currentBalance = 0;
-        let adminCurrentTab = 'deposits';
-        let historyCurrentTab = 'deposits';
+        // --- 1. GESTION DU SOLDE ET DE LA SIMULATION ---
+        let soldeActuel = 800;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const logoEl = document.querySelector('.logo');
-            if(logoEl) {
-                logoEl.addEventListener('dblclick', openAdminPanel);
+        function mettreAJourAffichageSolde() {
+            document.getElementById('solde-montant').innerText = soldeActuel;
+        }
+
+        function simulerGains24h() {
+            let gainsAjoutes = 500; // Montant simulé ajouté
+            soldeActuel += gainsAjoutes;
+            mettreAJourAffichageSolde();
+            alert("Gains journaliers calculés et distribués avec succès ! +" + gainsAjoutes + " FCFA");
+        }
+
+        // --- 2. GESTION DU PARRAINAGE (17% sur le 1er dépôt) ---
+        // Simuler un ID utilisateur unique (ex: généré ou récupéré du compte)
+        if (!localStorage.getItem('userId')) {
+            localStorage.setItem('userId', 'USER_' + Math.floor(Math.random() * 10000));
+        }
+
+        function copierLienParrainage() {
+            const userId = localStorage.getItem('userId');
+            const lienComplet = window.location.origin + window.location.pathname + '?ref=' + userId;
+            
+            navigator.clipboard.writeText(lienComplet).then(() => {
+                alert("Lien de parrainage copié !\nPartagez-le pour toucher 17% sur le premier dépôt de vos filleuls.");
+            }).catch(() => {
+                prompt("Copiez votre lien manuellement :", lienComplet);
+            });
+        }
+
+        // Détecter l'arrivée d'un filleul via un lien de parrainage au chargement de la page
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const codeParrain = urlParams.get('ref');
+
+            if (codeParrain) {
+                localStorage.setItem('filleulParrainId', codeParrain);
+                console.log("Visiteur parrainé par : " + codeParrain);
             }
         });
 
-        function switchTab(tabId, btnElement) {
-            document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            if(btnElement) btnElement.classList.add('active');
-            if(currentUser) refreshBalance();
+        // Fonction à appeler lors de la validation du PREMIER dépôt du filleul
+        function validerPremierDepotFilleul(montantDepose) {
+            const parrainId = localStorage.getItem('filleulParrainId');
+            const dejaParraine = localStorage.getItem('dejaParraine');
+
+            if (parrainId && !dejaParraine) {
+                const commission = montantDepose * 0.17; // 17% du premier dépôt
+                console.log(`Le parrain ${parrainId} reçoit une commission de ${commission} FCFA (17% de ${montantDepose})`);
+                
+                // Marquer que le premier dépôt a déjà généré le bonus
+                localStorage.setItem('dejaParraine', 'true');
+            }
         }
 
-        function openAuthModal(mode) { document.getElementById('authModal').style.display = 'flex'; switchAuthMode(mode); }
-        function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
-        function switchAuthMode(mode) {
-            currentMode = mode;
-            document.getElementById('modalTabLogin').classList.toggle('active', mode === 'login');
-            document.getElementById('modalTabRegister').classList.toggle('active', mode === 'register');
-            document.getElementById('submitBtnText').innerText = mode === 'login' ? 'Se connecter' : 'Créer un compte (+800 FCFA)';
-        }
-
-        // ==========================================
-        // SECTION : GESTION DES DÉPÔTS
-        // ==========================================
-        let selectedDepositAmount = 3000;
-        const merchantNumbers = { "Orange Money": "+226 07 00 00 00", "Moov Money": "+226 01 00 00 00" };
-
-        function selectDepositAmount(amount, btnElement) {
-            selectedDepositAmount = amount;
-            document.querySelectorAll('.amount-option').forEach(el => el.classList.remove('selected'));
-            if(btnElement) btnElement.classList.add('selected');
-        }
-
-        function openDepositWithAmount(amount) {
-            if(!currentUser) { alert('Connectez-vous d\'abord.'); openAuthModal('login'); return; }
-            selectedDepositAmount = amount;
-            document.querySelectorAll('.amount-option').forEach(el => {
-                const btnText = el.innerText.replace(/\s+/g, '').replace('FCFA', '').replace('VIP', '');
-                if(parseInt(btnText) === amount) el.classList.add('selected');
-                else el.classList.remove('selected');
-            });
-            document.getElementById('senderPhone').value = currentUser;
-            document.getElementById('depositModal').style.display = 'flex';
-        }
-
-        function updateDepositNumber() {
-            const method = document.getElementById('depositMethod').value;
-            document.getElementById('operatorLabel').innerText = method;
-            document.getElementById('merchantNumber').innerText = merchantNumbers[method];
-        }
-
-        function copyMerchantNumber(btnElement) {
-            navigator.clipboard.writeText(document.getElementById('merchantNumber').innerText).then(() => {
-                btnElement.innerText = 'Copié !'; setTimeout(() => btnElement.innerText = 'Copier', 1500);
-            });
-        }
-
-        function openDepositModal() {
-            if(!currentUser) { alert('Connectez-vous d\'abord.'); openAuthModal('login'); return; }
-            document.getElementById('senderPhone').value = currentUser;
-            document.getElementById('depositModal').style.display = 'flex';
-        }
-
-        function closeDepositModal() { 
-            document.getElementById('depositModal').style.display = 'none'; 
-        }
-
-        async function handleDeposit(e) {
-            e.preventDefault();
-            const msg = document.getElementById('depositMessage');
-            msg.style.color = '#16a34a';
-            msg.innerText = "Demande de dépôt enregistrée !";
+        // --- 3. ACCÈS ADMINISTRATEUR SÉCURISÉ (Pas de 5 clics publics) ---
+        function ouvrirAdminSecret(motDe PasseSaisi) {
+            const mdpAdmin = "Bagassi2006"; // Remplacez par votre mot de passe secret
+            let mdp = prompt("Entrez le mot de passe administrateur :");
             
-            try {
-                await fetch('/api/deposit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userPhone: currentUser,
-                        senderPhone: document.getElementById('senderPhone').value,
-                        amount: selectedDepositAmount,
-                        method: document.getElementById('depositMethod').value
-                    })
-                });
-            } catch(err) {}
-
-            // Fermeture automatique de la modale après 1.5s
-            setTimeout(() => {
-                closeDepositModal();
-                msg.innerText = '';
-            }, 1500);
-        }
-
-        // ==========================================
-        // SECTION : GESTION DES RETRAITS
-        // ==========================================
-        function calculateWithdrawFee() {
-            const amt = parseFloat(document.getElementById('withdrawAmount').value) || 0;
-            const fee = amt * 0.10;
-            const net = amt - fee;
-            document.getElementById('feeText').innerText = fee.toLocaleString('fr-FR') + ' FCFA';
-            document.getElementById('netText').innerText = net.toLocaleString('fr-FR') + ' FCFA';
-        }
-
-        function openWithdrawModal() {
-            if(!currentUser) { alert('Connectez-vous d\'abord.'); openAuthModal('login'); return; }
-            document.getElementById('withdrawPhone').value = currentUser;
-            document.getElementById('withdrawModal').style.display = 'flex';
-        }
-
-        function closeWithdrawModal() { 
-            document.getElementById('withdrawModal').style.display = 'none'; 
-        }
-
-        async function handleWithdraw(e) {
-            e.preventDefault();
-            const amount = parseInt(document.getElementById('withdrawAmount').value);
-            const msg = document.getElementById('withdrawMessage');
-            const btn = document.getElementById('withdrawBtn');
-
-            btn.disabled = true;
-            msg.style.color = '#d97706';
-            msg.innerText = '⏳ Traitement en cours...';
-
-            try {
-                const res = await fetch('/api/withdraw', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userPhone: currentUser,
-                        amount,
-                        withdrawPhone: document.getElementById('withdrawPhone').value
-                    })
-                });
-                const data = await res.json();
-
-                if(data.success) {
-                    currentBalance = data.balance;
-                    document.getElementById('profileBalance').innerText = currentBalance.toLocaleString('fr-FR') + ' FCFA';
-                    msg.style.color = '#16a34a';
-                    msg.innerText = '✅ Retrait pris en compte !';
-                    
-                    // Réinitialisation et fermeture automatique après 1.5s
-                    setTimeout(() => {
-                        closeWithdrawModal();
-                        document.getElementById('withdrawAmount').value = '';
-                        document.getElementById('feeText').innerText = '0 FCFA';
-                        document.getElementById('netText').innerText = '0 FCFA';
-                        msg.innerText = '';
-                        btn.disabled = false;
-                    }, 1500);
-                } else {
-                    msg.style.color = '#ef4444';
-                    msg.innerText = data.error;
-                    btn.disabled = false;
-                }
-            } catch(err) {
-                msg.style.color = '#ef4444';
-                msg.innerText = 'Erreur réseau.';
-                btn.disabled = false;
+            if (mdp === mdpAdmin) {
+                document.getElementById('admin-panel').style.display = 'block';
+                alert("Accès administrateur autorisé.");
+            } else if (mdp !== null) {
+                alert("Mot de passe incorrect.");
             }
         }
 
-        async function refreshBalance() {
-            if(!currentUser) return;
-            const res = await fetch('/api/user/' + encodeURIComponent(currentUser));
-            const data = await res.json();
-            if(data.success) {
-                currentBalance = data.balance;
-                document.getElementById('profileBalance').innerText = currentBalance.toLocaleString('fr-FR') + ' FCFA';
-            }
+        function fermerAdmin() {
+            document.getElementById('admin-panel').style.display = 'none';
         }
 
-        // ==========================================
-        // SECTION : HISTORIQUE UTILISATEUR
-        // ==========================================
-        function openHistoryModal() {
-            if(!currentUser) { alert('Connectez-vous d\'abord.'); openAuthModal('login'); return; }
-            document.getElementById('historyModal').style.display = 'flex';
-            loadUserHistory();
-        }
-
-        function switchHistoryTab(tab) {
-            historyCurrentTab = tab;
-            document.getElementById('histTabDep').classList.toggle('active', tab === 'deposits');
-            document.getElementById('histTabWit').classList.toggle('active', tab === 'withdrawals');
-            loadUserHistory();
-        }
-
-        async function loadUserHistory() {
-            const listDiv = document.getElementById('historyListContent');
-            listDiv.innerHTML = '<p style="color:#64748b; font-size:13px; text-align:center;">Chargement...</p>';
-
-            try {
-                const res = await fetch('/api/user/history/' + encodeURIComponent(currentUser));
-                const data = await res.json();
-
-                if(!data.success) return;
-
-                if(historyCurrentTab === 'deposits') {
-                    if(data.deposits.length === 0) {
-                        listDiv.innerHTML = '<p style="color:#64748b; font-size:13px; text-align:center;">Aucun dépôt effectué.</p>';
-                        return;
-                    }
-                    listDiv.innerHTML = data.deposits.map(d => {
-                        let badgeColor = '#d97706';
-                        if(d.status === 'VALIDÉ') badgeColor = '#16a34a';
-                        if(d.status === 'REJETÉ') badgeColor = '#ef4444';
-
-                        return `
-                            <div style="border:1.5px solid #e2e8f0; padding:12px; border-radius:12px; font-size:13px; background:#f8fafc;">
-                                <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                                    <strong>Dépôt ${d.method}</strong>
-                                    <span style="color:${badgeColor}; font-weight:bold;">${d.status}</span>
-                                </div>
-                                <div style="color:#475569;">Montant : <b style="color:#0f172a;">${d.amount.toLocaleString()} FCFA</b></div>
-                                <div style="color:#94a3b8; font-size:11px; margin-top:4px;">Envoyé depuis : ${d.senderPhone}</div>
-                            </div>
-                        `;
-                    }).join('');
-                } else {
-                    if(data.withdrawals.length === 0) {
-                        listDiv.innerHTML = '<p style="color:#64748b; font-size:13px; text-align:center;">Aucun retrait effectué.</p>';
-                        return;
-                    }
-                    listDiv.innerHTML = data.withdrawals.map(w => {
-                        let badgeColor = '#d97706';
-                        if(w.status === 'PAYÉ AVEC SUCCÈS') badgeColor = '#16a34a';
-                        if(w.status === 'ANNULÉ') badgeColor = '#ef4444';
-
-                        return `
-                            <div style="border:1.5px solid #e2e8f0; padding:12px; border-radius:12px; font-size:13px; background:#f8fafc;">
-                                <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                                    <strong>Retrait Mobile Money</strong>
-                                    <span style="color:${badgeColor}; font-weight:bold; font-size:11px;">${w.status}</span>
-                                </div>
-                                <div style="color:#475569;">Demandé : <b>${w.requestedAmount.toLocaleString()} FCFA</b></div>
-                                <div style="color:#475569;">Frais (10%) : ${w.fee.toLocaleString()} FCFA</div>
-                                <div style="color:#16a34a; font-weight:bold;">Net reçu : ${w.netAmount.toLocaleString()} FCFA</div>
-                                <div style="color:#94a3b8; font-size:11px; margin-top:4px;">Vers : ${w.withdrawPhone}</div>
-                            </div>
-                        `;
-                    }).join('');
-                }
-            } catch(err) {
-                listDiv.innerHTML = '<p style="color:#ef4444; font-size:13px; text-align:center;">Erreur de chargement.</p>';
-            }
-        }
-
-        // ==========================================
-        // SECTION : PANNEAU ADMIN & AUTH
-        // ==========================================
-        function switchAdminTab(tab) {
-            adminCurrentTab = tab;
-            document.getElementById('adminTabDep').classList.toggle('active', tab === 'deposits');
-            document.getElementById('adminTabWit').classList.toggle('active', tab === 'withdrawals');
-            loadAdminData();
-        }
-
-        async function openAdminPanel() {
-            document.getElementById('adminModal').style.display = 'flex';
-            loadAdminData();
-        }
-
-        async function loadAdminData() {
-            const listDiv = document.getElementById('adminListContent');
-            listDiv.innerHTML = 'Chargement...';
-
-            if(adminCurrentTab === 'deposits') {
-                const res = await fetch('/api/admin/deposits');
-                const deposits = await res.json();
-                if(deposits.length === 0) { listDiv.innerHTML = '<p style="color:#64748b; font-size:13px;">Aucun dépôt.</p>'; return; }
-                listDiv.innerHTML = deposits.map(d => `
-                    <div style="border:1px solid #e2e8f0; padding:12px; border-radius:12px; font-size:13px; background:#f8fafc;">
-                        <div><strong>Dépôt :</strong> ${d.amount.toLocaleString()} FCFA (${d.method})</div>
-                        <div>Client : ${d.userPhone} | Exp : ${d.senderPhone}</div>
-                        <div>Statut : <b>${d.status}</b></div>
-                        ${d.status === 'EN ATTENTE' ? `<div style="display:flex;gap:8px;margin-top:8px;"><button onclick="verifyDeposit(${d.id}, 'APPROVE')" style="flex:1;background:#16a34a;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Valider</button><button onclick="verifyDeposit(${d.id}, 'REJECT')" style="flex:1;background:#ef4444;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Rejeter</button></div>` : ''}
-                    </div>
-                `).join('');
-            } else {
-                const res = await fetch('/api/admin/withdrawals');
-                const withdrawals = await res.json();
-                if(withdrawals.length === 0) { listDiv.innerHTML = '<p style="color:#64748b; font-size:13px;">Aucun retrait.</p>'; return; }
-                listDiv.innerHTML = withdrawals.map(w => `
-                    <div style="border:1px solid #e2e8f0; padding:12px; border-radius:12px; font-size:13px; background:#f8fafc;">
-                        <div><strong>Retrait :</strong> ${w.requestedAmount.toLocaleString()} FCFA</div>
-                        <div>Frais (10%) : ${w.fee.toLocaleString()} FCFA | Net : <b style="color:#ef4444;">${w.netAmount.toLocaleString()} FCFA</b></div>
-                        <div>Client : ${w.userPhone} | Numéro : <b>${w.withdrawPhone}</b></div>
-                        <div>Statut : <b>${w.status}</b></div>
-                        ${w.status === 'EN COURS DE TRAITEMENT' ? `<div style="display:flex;gap:8px;margin-top:8px;"><button onclick="verifyWithdrawal(${w.id}, 'PAY')" style="flex:1;background:#16a34a;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Payer</button><button onclick="verifyWithdrawal(${w.id}, 'CANCEL')" style="flex:1;background:#ef4444;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Annuler</button></div>` : ''}
-                    </div>
-                `).join('');
-            }
-        }
-
-        async function verifyDeposit(id, action) {
-            await fetch('/api/admin/verify-deposit', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({depositId: id, action}) });
-            loadAdminData();
-        }
-
-        async function verifyWithdrawal(id, action) {
-            await fetch('/api/admin/verify-withdrawal', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({withdrawalId: id, action}) });
-            loadAdminData();
-        }
-
-        async function triggerDailyYield() {
-            const res = await fetch('/api/admin/trigger-daily-yield', { method: 'POST' });
-            const data = await res.json();
-            alert(data.message);
-        }
-
-        async function handleAuthSubmit(e) {
-            e.preventDefault();
-            const phone = document.getElementById('authPhone').value;
-            const password = document.getElementById('authPassword').value;
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const refBy = urlParams.get('ref') || null;
-
-            const res = await fetch(currentMode === 'register' ? '/api/register' : '/api/login', {
-                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({phone, password, refBy})
-            });
-            const data = await res.json();
-            const msg = document.getElementById('formMessage');
-            msg.style.color = data.success ? '#16a34a' : '#ef4444';
-            msg.innerText = data.message || data.error;
-
-            if(data.success) {
-                setTimeout(() => {
-                    currentUser = phone;
-                    currentBalance = data.balance;
-                    document.getElementById('headerAuthBtns').style.display = 'none';
-                    document.getElementById('profilePhone').innerText = phone;
-                    document.getElementById('profileAvatar').innerText = phone.slice(-2);
-                    document.getElementById('profileBalance').innerText = currentBalance.toLocaleString('fr-FR') + ' FCFA';
-                    document.getElementById('logoutRow').style.display = 'flex';
-                    document.getElementById('refLinkDisplay').innerText = window.location.origin + '/?ref=' + phone;
-                    document.getElementById('authModal').style.display = 'none';
-                }, 800);
-            }
-        }
-
-        function logoutUser() {
-            currentUser = null; currentBalance = 0;
-            document.getElementById('headerAuthBtns').style.display = 'flex';
-            document.getElementById('profilePhone').innerText = 'Non connecté';
-            document.getElementById('profileBalance').innerText = '0 FCFA';
-            document.getElementById('logoutRow').style.display = 'none';
-            document.getElementById('refLinkDisplay').innerText = 'Connectez-vous pour voir votre lien';
-            switchTab('accueil', document.querySelector('.nav-item'));
-        }
+        // Pour ouvrir le panneau admin en tant qu'administrateur, 
+        // vous pouvez taper ouvrirAdminSecret() directement dans la console de votre navigateur (F12).
     </script>
-    <script>
-  function ouvrirAdminSecret() {
-      let mdp = prompt("Entrez le mot de passe administrateur :");
-      if (mdp === "Bagassi2006") { // Remplacez MON_CODE_SECRET par votre vrai mot de passe
-          document.getElementById('admin-panel').style.display = 'block';
-          alert("Accès autorisé !");
-      } else if (mdp !== null) {
-          alert("Mot de passe incorrect !");
-      }
-  }
-</script>
 </body>
 </html>
