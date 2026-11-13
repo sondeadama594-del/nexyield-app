@@ -420,12 +420,15 @@
         let adminCurrentTab = 'deposits';
         let historyCurrentTab = 'deposits';
 
-        // Gestion propre de l'URL de parrainage (sans caractères spéciaux buggés)
+        // Détection automatique de l'URL de base (Render ou Localhost)
+        const BASE_URL = window.location.hostname.includes('localhost') 
+            ? window.location.origin 
+            : 'https://nexyield-app.onrender.com';
+
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const refCode = urlParams.get('ref');
             if (refCode) {
-                // Retrouver le vrai numéro associé au code de parrainage stocké
                 const realPhone = localStorage.getItem(`nexyield_code_${refCode}`) || refCode;
                 localStorage.setItem('nexyield_ref_by', realPhone);
             }
@@ -573,7 +576,7 @@
                 return;
             }
             const userCode = getOrCreateUserRefCode(currentUser);
-            const link = window.location.origin + window.location.pathname + '?ref=' + userCode;
+            const link = BASE_URL + '/?ref=' + userCode;
             
             navigator.clipboard.writeText(link).then(() => {
                 btnElement.innerText = 'Lien copié !';
@@ -951,7 +954,7 @@
                     document.getElementById('logoutRow').style.display = 'flex';
                     
                     const userCode = getOrCreateUserRefCode(phone);
-                    document.getElementById('refLinkDisplay').innerText = window.location.origin + window.location.pathname + '?ref=' + userCode;
+                    document.getElementById('refLinkDisplay').innerText = (window.location.hostname.includes('localhost') ? window.location.origin : 'https://nexyield-app.onrender.com') + '/?ref=' + userCode;
                     document.getElementById('authModal').style.display = 'none';
                 }, 800);
             }
