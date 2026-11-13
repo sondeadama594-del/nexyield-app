@@ -825,37 +825,46 @@
             loadAdminData();
         }
 
-        async function loadAdminData() {
+       async function loadAdminData() {
             const listDiv = document.getElementById('adminListContent');
             listDiv.innerHTML = 'Chargement...';
 
-            if(adminCurrentTab === 'deposits') {
-                const const res = await fetch('/api/admin/data');
-const data = await res.json();
-const deposits = data.deposits; // On récupère la liste des dépôts depuis l'objet global du serveur
-                const deposits = await res.json();
-                if(deposits.length === 0) { listDiv.innerHTML = '<p style="color:#64748b; font-size:13px;">Aucun dépôt.</p>'; return; }
-                listDiv.innerHTML = deposits.map(d => `
-                    <div style="border:1px solid #e2e8f0; padding:12px; border-radius:12px; font-size:13px; background:#f8fafc;">
-                        <div><strong>Dépôt :</strong> ${d.amount.toLocaleString()} FCFA (${d.method})</div>
-                        <div>Client : ${d.userPhone} | Exp : ${d.senderPhone}</div>
-                        <div>Statut : <b>${d.status}</b></div>
-                        ${d.status === 'EN ATTENTE' ? `<div style="display:flex;gap:8px;margin-top:8px;"><button onclick="verifyDeposit(${d.id}, 'APPROVE', '${d.userPhone}', ${d.amount})" style="flex:1;background:#16a34a;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Valider</button><button onclick="verifyDeposit(${d.id}, 'REJECT', '${d.userPhone}', ${d.amount})" style="flex:1;background:#ef4444;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Rejeter</button></div>` : ''}
-                    </div>
-                `).join('');
-            } else {
-                const res = await fetch('/api/admin/withdrawals');
-                const withdrawals = await res.json();
-                if(withdrawals.length === 0) { listDiv.innerHTML = '<p style="color:#64748b; font-size:13px;">Aucun retrait.</p>'; return; }
-                listDiv.innerHTML = withdrawals.map(w => `
-                    <div style="border:1px solid #e2e8f0; padding:12px; border-radius:12px; font-size:13px; background:#f8fafc;">
-                        <div><strong>Retrait :</strong> ${w.requestedAmount.toLocaleString()} FCFA</div>
-                        <div>Frais (10%) : ${w.fee.toLocaleString()} FCFA | Net : <b style="color:#ef4444;">${w.netAmount.toLocaleString()} FCFA</b></div>
-                        <div>Client : ${w.userPhone} | Numéro : <b>${w.withdrawPhone}</b></div>
-                        <div>Statut : <b>${w.status}</b></div>
-                        ${w.status === 'EN COURS DE TRAITEMENT' ? `<div style="display:flex;gap:8px;margin-top:8px;"><button onclick="verifyWithdrawal(${w.id}, 'PAY')" style="flex:1;background:#16a34a;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Payer</button><button onclick="verifyWithdrawal(${w.id}, 'CANCEL')" style="flex:1;background:#ef4444;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Annuler</button></div>` : ''}
-                    </div>
-                `).join('');
+            try {
+                const res = await fetch('/api/admin/data');
+                const data = await res.json();
+
+                if(adminCurrentTab === 'deposits') {
+                    const deposits = data.deposits || [];
+                    if(deposits.length === 0) { 
+                        listDiv.innerHTML = '<p style="color:#64748b; font-size:13px;">Aucun dépôt.</p>'; 
+                        return; 
+                    }
+                    listDiv.innerHTML = deposits.map(d => `
+                        <div style="border:1px solid #e2e8f0; padding:12px; border-radius:12px; font-size:13px; background:#f8fafc;">
+                            <div><strong>Dépôt :</strong> ${d.amount.toLocaleString()} FCFA (${d.method})</div>
+                            <div>Client : ${d.userPhone} | Exp : ${d.senderPhone}</div>
+                            <div>Statut : <b>${d.status}</b></div>
+                            ${d.status === 'EN ATTENTE' ? `<div style="display:flex;gap:8px;margin-top:8px;"><button onclick="verifyDeposit(${d.id}, 'APPROVE', '${d.userPhone}', ${d.amount})" style="flex:1;background:#16a34a;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Valider</button><button onclick="verifyDeposit(${d.id}, 'REJECT', '${d.userPhone}', ${d.amount})" style="flex:1;background:#ef4444;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Rejeter</button></div>` : ''}
+                        </div>
+                    `).join('');
+                } else {
+                    const withdrawals = data.withdrawals || [];
+                    if(withdrawals.length === 0) { 
+                        listDiv.innerHTML = '<p style="color:#64748b; font-size:13px;">Aucun retrait.</p>'; 
+                        return; 
+                    }
+                    listDiv.innerHTML = withdrawals.map(w => `
+                        <div style="border:1px solid #e2e8f0; padding:12px; border-radius:12px; font-size:13px; background:#f8fafc;">
+                            <div><strong>Retrait :</strong> ${w.requestedAmount.toLocaleString()} FCFA</div>
+                            <div>Frais (10%) : ${w.fee.toLocaleString()} FCFA | Net : <b style="color:#ef4444;">${w.netAmount.toLocaleString()} FCFA</b></div>
+                            <div>Client : ${w.userPhone} | Numéro : <b>${w.withdrawPhone}</b></div>
+                            <div>Statut : <b>${w.status}</b></div>
+                            ${w.status === 'EN COURS DE TRAITEMENT' ? `<div style="display:flex;gap:8px;margin-top:8px;"><button onclick="verifyWithdrawal(${w.id}, 'PAY')" style="flex:1;background:#16a34a;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Payer</button><button onclick="verifyWithdrawal(${w.id}, 'CANCEL')" style="flex:1;background:#ef4444;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Annuler</button></div>` : ''}
+                        </div>
+                    `).join('');
+                }
+            } catch(err) {
+                listDiv.innerHTML = '<p style="color:#ef4444; font-size:13px;">Erreur de chargement.</p>';
             }
         }
 
