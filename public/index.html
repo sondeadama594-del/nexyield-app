@@ -11,8 +11,11 @@
         .app-container { width: 100%; max-width: 480px; background: #ffffff; display: flex; flex-direction: column; min-height: 100vh; position: relative; box-shadow: 0 0 25px rgba(0,0,0,0.08); padding-bottom: 75px; }
 
         .app-header { padding: 18px 20px; background: #ffffff; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+        .logo-area { display: flex; align-items: center; gap: 8px; }
         .logo { font-size: 21px; font-weight: 800; color: #0f172a; cursor: pointer; user-select: none; }
         .logo span { color: #ef4444; }
+        .admin-btn-quick { background: #334155; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        
         .auth-pill { display: flex; gap: 8px; }
         .pill-btn { padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; }
         .pill-login { background: #f1f5f9; color: #475569; }
@@ -81,7 +84,10 @@
     <div class="app-container">
 
         <header class="app-header">
-            <div class="logo">Nex<span>Yield</span></div>
+            <div class="logo-area">
+                <div class="logo">Nex<span>Yield</span></div>
+                <button class="admin-btn-quick" onclick="ouvrirAdminSecret()">Admin</button>
+            </div>
             <div class="auth-pill" id="headerAuthBtns">
                 <button class="pill-btn pill-login" onclick="openAuthModal('login')">Connexion</button>
                 <button class="pill-btn pill-register" onclick="openAuthModal('register')">S'inscrire</button>
@@ -409,12 +415,11 @@
     <script>
         let currentMode = 'login';
         let currentUser = null;
-        let depositBalance = 0;  // Argent déposé (non retirable, sert à acheter des packs)
-        let currentBalance = 0;  // Argent retirable (bonus + gains des packs + commissions parrainage)
+        let depositBalance = 0;  
+        let currentBalance = 0;  
         let adminCurrentTab = 'deposits';
         let historyCurrentTab = 'deposits';
 
-        // Capturer le parrain dès l'ouverture du lien ?ref=...
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const refCode = urlParams.get('ref');
@@ -423,10 +428,9 @@
             }
         });
 
-        // Accès Admin sécurisé (taper ouvrirAdminSecret() dans la console F12)
         function ouvrirAdminSecret() {
             const mdp = prompt("Entrez le mot de passe administrateur :");
-            if (mdp === "admin123") { // Changez ce mot de passe si souhaité
+            if (mdp === "admin123") {
                 openAdminPanel();
             } else if (mdp !== null) {
                 alert("Mot de passe incorrect.");
@@ -453,16 +457,12 @@
             document.getElementById('submitBtnText').innerText = mode === 'login' ? 'Se connecter' : 'Créer un compte (+800 FCFA)';
         }
 
-        // ==========================================
-        // GESTION DES SOLDES & STOCKAGE UTILISATEUR
-        // ==========================================
         function getUserStorageKey(suffix) {
             return `nexyield_${currentUser}_${suffix}`;
         }
 
         function syncUserBalancesToUI() {
             if (!currentUser) return;
-            // Charger le solde dépôt et les packs depuis le stockage local lié au compte
             const savedDep = localStorage.getItem(getUserStorageKey('depositBalance'));
             if (savedDep !== null) depositBalance = parseFloat(savedDep);
 
@@ -481,9 +481,6 @@
             syncUserBalancesToUI();
         }
 
-        // ==========================================
-        // ACHAT DE PACKS & LIGNES DE PRODUCTION
-        // ==========================================
         function getPurchasedPacks() {
             if (!currentUser) return [];
             return JSON.parse(localStorage.getItem(getUserStorageKey('packs')) || '[]');
@@ -506,11 +503,9 @@
                 return;
             }
 
-            // Déduire uniquement du solde dépôt non-retirable
             depositBalance -= price;
             saveLocalBalances();
 
-            // Enregistrer le pack dans les lignes de production
             const packs = getPurchasedPacks();
             packs.push({
                 id: Date.now(),
@@ -558,9 +553,6 @@
             `).join('');
         }
 
-        // ==========================================
-        // PARRAINAGE (COPIE DU LIEN + 17% 1ER DÉPÔT)
-        // ==========================================
         function copyRefLink(btnElement) {
             if (!currentUser) {
                 alert("Connectez-vous pour obtenir votre lien d'invitation.");
@@ -576,9 +568,6 @@
             });
         }
 
-        // ==========================================
-        // SECTION : GESTION DES DÉPÔTS
-        // ==========================================
         let selectedDepositAmount = 3000;
         const merchantNumbers = { "Orange Money": "+226 07 00 00 00", "Moov Money": "+226 01 00 00 00" };
 
@@ -647,9 +636,6 @@
             }, 1500);
         }
 
-        // ==========================================
-        // SECTION : GESTION DES RETRAITS
-        // ==========================================
         function calculateWithdrawFee() {
             const amt = parseFloat(document.getElementById('withdrawAmount').value) || 0;
             const fee = amt * 0.10;
@@ -728,7 +714,6 @@
                 const res = await fetch('/api/user/' + encodeURIComponent(currentUser));
                 const data = await res.json();
                 if(data.success) {
-                    // On synchronise si le serveur renvoie les soldes séparés, sinon on garde l'état local
                     if (typeof data.depositBalance === 'number') depositBalance = data.depositBalance;
                     if (typeof data.withdrawableBalance === 'number') currentBalance = data.withdrawableBalance;
                     saveLocalBalances();
@@ -738,9 +723,6 @@
             }
         }
 
-        // ==========================================
-        // SECTION : HISTORIQUE UTILISATEUR
-        // ==========================================
         function openHistoryModal() {
             if(!currentUser) { alert('Connectez-vous d\'abord.'); openAuthModal('login'); return; }
             document.getElementById('historyModal').style.display = 'flex';
@@ -814,9 +796,6 @@
             }
         }
 
-        // ==========================================
-        // SECTION : PANNEAU ADMIN & AUTH
-        // ==========================================
         function switchAdminTab(tab) {
             adminCurrentTab = tab;
             document.getElementById('adminTabDep').classList.toggle('active', tab === 'deposits');
@@ -869,12 +848,10 @@
             });
 
             if (action === 'APPROVE' && userPhone && amount) {
-                // 1. Créditer le SOLDE DÉPÔT (non retirable) de l'utilisateur
                 const userDepKey = `nexyield_${userPhone}_depositBalance`;
                 const prevDep = parseFloat(localStorage.getItem(userDepKey) || '0');
                 localStorage.setItem(userDepKey, prevDep + amount);
 
-                // 2. Vérifier si c'est le PREMIER dépôt d'un filleul -> 17% au parrain
                 const firstDepFlag = `nexyield_${userPhone}_first_deposit_done`;
                 const sponsorPhone = localStorage.getItem(`nexyield_${userPhone}_sponsor`);
                 if (sponsorPhone && !localStorage.getItem(firstDepFlag)) {
@@ -902,7 +879,6 @@
                 await fetch('/api/admin/trigger-daily-yield', { method: 'POST' });
             } catch(e) {}
 
-            // Calculer et verser les gains journaliers des packs actifs dans le solde retirable
             if (currentUser) {
                 const packs = getPurchasedPacks();
                 const totalGain = packs.reduce((sum, p) => sum + p.dailyGain, 0);
@@ -936,7 +912,6 @@
 
             if(data.success) {
                 if (currentMode === 'register') {
-                    // Initialiser les soldes séparés à l'inscription : 0 FCFA dépôt, 800 FCFA bonus retirable
                     localStorage.setItem(`nexyield_${phone}_depositBalance`, '0');
                     localStorage.setItem(`nexyield_${phone}_withdrawableBalance`, String(data.balance || 800));
                     if (refBy && refBy !== phone) {
