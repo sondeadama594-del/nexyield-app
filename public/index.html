@@ -422,8 +422,13 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const refCode = urlParams.get('ref');
+            let refCode = urlParams.get('ref');
             if (refCode) {
+                // S'assurer que le + encodé en espace ou conservé est géré correctement
+                refCode = refCode.trim().replace(/ /g, '+');
+                if(!refCode.startsWith('+') && /^\d+$/.test(refCode)) {
+                    refCode = '+' + refCode;
+                }
                 localStorage.setItem('nexyield_ref_by', refCode);
             }
         });
@@ -559,7 +564,10 @@
                 openAuthModal('login');
                 return;
             }
-            const link = window.location.origin + window.location.pathname + '?ref=' + encodeURIComponent(currentUser);
+            // Utiliser encodeURIComponent pour encoder correctement le '+' en '%2B' pour qu'il passe partout sur WhatsApp/Navigateurs
+            const encodedUser = encodeURIComponent(currentUser);
+            const link = window.location.origin + window.location.pathname + '?ref=' + encodedUser;
+            
             navigator.clipboard.writeText(link).then(() => {
                 btnElement.innerText = 'Lien copié !';
                 setTimeout(() => btnElement.innerText = 'Copier le lien', 2000);
@@ -934,7 +942,7 @@
                     syncUserBalancesToUI();
                     renderPurchasedPacks();
                     document.getElementById('logoutRow').style.display = 'flex';
-                    document.getElementById('refLinkDisplay').innerText = window.location.origin + window.location.pathname + '?ref=' + phone;
+                    document.getElementById('refLinkDisplay').innerText = window.location.origin + window.location.pathname + '?ref=' + encodeURIComponent(phone);
                     document.getElementById('authModal').style.display = 'none';
                 }, 800);
             }
