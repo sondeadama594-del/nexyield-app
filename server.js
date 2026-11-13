@@ -7,14 +7,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Base de données centrale en mémoire sur le serveur
 let db = {
-    users: {},       // Stocke les mots de passe et soldes : { "07000000": { password: "...", depositBalance: 0, withdrawableBalance: 800 } }
-    deposits: [],    // Liste de tous les dépôts
-    withdrawals: []  // Liste de tous les retraits
+    users: {},       // { phone: { password, depositBalance, withdrawableBalance, sponsor, firstDepositDone } }
+    deposits: [],    // Liste des dépôts
+    withdrawals: []  // Liste des retraits
 };
 
-// 1. Inscription
+// 1. Inscription (avec gestion du parrainage)
 app.post('/api/register', (req, res) => {
-    const { phone, password } = req.body;
+    const { phone, password, refBy } = req.body;
     if (!phone || !password) {
         return res.status(400).json({ success: false, error: "Numéro ou mot de passe manquant." });
     }
@@ -22,11 +22,12 @@ app.post('/api/register', (req, res) => {
         return res.status(400).json({ success: false, error: "Ce numéro est déjà utilisé." });
     }
 
-    // Créer le compte avec 800 FCFA de bonus initial
     db.users[phone] = {
         password: password,
         depositBalance: 0,
-        withdrawableBalance: 800
+        withdrawableBalance: 800, // Bonus de bienvenue
+        sponsor: refBy || null,
+        firstDepositDone: false
     };
 
     res.json({ success: true, message: "Compte créé avec succès ! +800 FCFA de bonus.", balance: 800 });
@@ -59,7 +60,20 @@ app.get('/api/user/:phone', (req, res) => {
     res.json({ success: true, depositBalance: user.depositBalance, withdrawableBalance: user.withdrawableBalance });
 });
 
-// 4. Soumettre un dépôt
+// 4. Récupérer l'historique d'un utilisateur (Dépôts & Retraits)
+app.get('/api/user/history/:phone', (req, res) => {
+    const phone = req.params.phone;
+    const userDeposits = db.deposits.filter(d => d.userPhone === phone);
+    const userWithdrawals = db.withdrawals.filter(w => w.userPhone === phone);
+    
+    res.json({
+        success: true,
+        deposits: userDeposits,
+        withdrawals: userWithdrawals
+    });
+});
+
+// 5. Soumettre un dépôt
 app.post('/api/deposit', (req, res) => {
     const { userPhone, senderPhone, amount, method } = req.body;
     const newDeposit = {
@@ -75,7 +89,7 @@ app.post('/api/deposit', (req, res) => {
     res.json({ success: true, message: "Demande de dépôt enregistrée." });
 });
 
-// 5. Soumettre un retrait
+// 6. Soumettre un retrait
 app.post('/api/withdraw', (req, res) => {
     const { userPhone, amount, withdrawPhone } = req.body;
     const user = db.users[userPhone];
@@ -102,7 +116,7 @@ app.post('/api/withdraw', (req, res) => {
     res.json({ success: true, message: "Retrait pris en compte." });
 });
 
-// 6. Données pour le Panneau Admin (depuis votre PC)
+// 7. Données globales pour le Panneau Admin
 app.get('/api/admin/data', (req, res) => {
     res.json({
         deposits: db.deposits,
@@ -111,7 +125,7 @@ app.get('/api/admin/data', (req, res) => {
     });
 });
 
-// 7. Validation / Rejet d'un dépôt par l'Admin
+// 8. Validation / Rejet d'un dépôt par l'Admin (avec versement auto des 17% au parrain)
 app.post('/api/admin/verify-deposit', (req, res) => {
     const { depositId, action } = req.body;
     const deposit = db.deposits.find(d => d.id == depositId);
@@ -122,8 +136,18 @@ app.post('/api/admin/verify-deposit', (req, res) => {
 
     if (action === 'APPROVE') {
         deposit.status = 'VALIDÉ';
-        if (db.users[deposit.userPhone]) {
-            db.users[deposit.userPhone].depositBalance += deposit.amount;
+        const userObj = db.users[deposit.userPhone];
+        
+        if (userObj) {
+            // Créditer le solde dépôt du client
+            userObj.depositBalance += deposit.amount;
+
+            // Gestion du parrainage (17% sur le premier dépôt validé)
+            if (userObj.sponsor && db.users[userObj.sponsor] && !userObj.firstDepositDone) {
+                const commission = Math.round(deposit.amount * 0.17);
+                db.users[userObj.sponsor].withdrawableBalance += commission;
+                userObj.firstDepositDone = true;
+            }
         }
     } else {
         deposit.status = 'REJETÉ';
@@ -132,7 +156,7 @@ app.post('/api/admin/verify-deposit', (req, res) => {
     res.json({ success: true, message: "Dépôt mis à jour." });
 });
 
-// 8. Validation d'un retrait par l'Admin
+// 9. Validation d'un retrait par l'Admin
 app.post('/api/admin/verify-withdrawal', (req, res) => {
     const { withdrawalId, action } = req.body;
     const withdrawal = db.withdrawals.find(w => w.id == withdrawalId);
