@@ -40,7 +40,8 @@
         .profile-card { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 24px; border-radius: 20px; margin-bottom: 18px; }
         .profile-info { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
         .avatar { width: 54px; height: 54px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; }
-        .balance-box { background: rgba(0,0,0,0.18); padding: 14px 16px; border-radius: 14px; }
+        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .balance-box { background: rgba(0,0,0,0.18); padding: 12px 14px; border-radius: 14px; }
         .profile-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .prof-btn { background: #f8fafc; border: 1px solid #e2e8f0; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 15px; color: #0f172a; cursor: pointer; text-align: center; }
         .menu-list { background: white; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; }
@@ -71,6 +72,8 @@
         .transfer-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; background: white; padding: 10px 12px; border-radius: 10px; border: 1px solid #e2e8f0; }
         .transfer-number { font-size: 16px; font-weight: 800; color: #0f172a; }
         .copy-btn { background: #0f172a; color: white; border: none; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+        .active-badge { background: #dcfce7; color: #16a34a; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
     </style>
 </head>
 <body>
@@ -93,7 +96,10 @@
                 <p style="font-size: 12px; color: #cbd5e1; margin-top: 5px;">Crédité instantanément à l'inscription</p>
             </div>
             
-            <h3 style="margin-bottom: 15px; font-size: 18px;">Opportunités d'investissement</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="font-size: 18px;">Opportunités d'investissement</h3>
+                <span style="font-size: 12px; color: #64748b; font-weight: 600;">Solde Dépôt : <strong id="homeDepositBalance" style="color: #0f172a;">0 FCFA</strong></span>
+            </div>
             
             <!-- Pack Bronze -->
             <div class="plan-card">
@@ -102,13 +108,13 @@
                     <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Idéal pour démarrer.</p>
                 </div>
                 <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>3 000 FCFA</span></div>
+                    <div class="stat-box"><label>Prix</label><span>3 000 FCFA</span></div>
                     <div class="stat-box"><label>Gain / jour</label><span class="green">600 FCFA</span></div>
                     <div class="stat-box"><label>Rendement</label><span>20%</span></div>
                 </div>
                 <div class="plan-footer">
                     <div class="total-earn">Journalier : <strong>20%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(3000)">Investir</button>
+                    <button class="action-btn" onclick="buyPack('Pack Bronze', 3000, 600, 20)">Investir</button>
                 </div>
             </div>
 
@@ -119,13 +125,13 @@
                     <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Rendement supérieur.</p>
                 </div>
                 <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>5 000 FCFA</span></div>
+                    <div class="stat-box"><label>Prix</label><span>5 000 FCFA</span></div>
                     <div class="stat-box"><label>Gain / jour</label><span class="green">1 050 FCFA</span></div>
                     <div class="stat-box"><label>Rendement</label><span>21%</span></div>
                 </div>
                 <div class="plan-footer">
                     <div class="total-earn">Journalier : <strong>21%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(5000)">Investir</button>
+                    <button class="action-btn" onclick="buyPack('Pack Argent', 5000, 1050, 21)">Investir</button>
                 </div>
             </div>
 
@@ -136,13 +142,13 @@
                     <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Pour investisseurs actifs.</p>
                 </div>
                 <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>10 000 FCFA</span></div>
+                    <div class="stat-box"><label>Prix</label><span>10 000 FCFA</span></div>
                     <div class="stat-box"><label>Gain / jour</label><span class="green">2 300 FCFA</span></div>
                     <div class="stat-box"><label>Rendement</label><span>23%</span></div>
                 </div>
                 <div class="plan-footer">
                     <div class="total-earn">Journalier : <strong>23%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(10000)">Investir</button>
+                    <button class="action-btn" onclick="buyPack('Pack Or', 10000, 2300, 23)">Investir</button>
                 </div>
             </div>
 
@@ -153,13 +159,13 @@
                     <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Niveau supérieur.</p>
                 </div>
                 <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>25 000 FCFA</span></div>
+                    <div class="stat-box"><label>Prix</label><span>25 000 FCFA</span></div>
                     <div class="stat-box"><label>Gain / jour</label><span class="green">6 250 FCFA</span></div>
                     <div class="stat-box"><label>Rendement</label><span>25%</span></div>
                 </div>
                 <div class="plan-footer">
                     <div class="total-earn">Journalier : <strong>25%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(25000)">Investir</button>
+                    <button class="action-btn" onclick="buyPack('Pack Platine', 25000, 6250, 25)">Investir</button>
                 </div>
             </div>
 
@@ -170,13 +176,13 @@
                     <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Haut rendement professionnel.</p>
                 </div>
                 <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>50 000 FCFA</span></div>
+                    <div class="stat-box"><label>Prix</label><span>50 000 FCFA</span></div>
                     <div class="stat-box"><label>Gain / jour</label><span class="green">15 000 FCFA</span></div>
                     <div class="stat-box"><label>Rendement</label><span>30%</span></div>
                 </div>
                 <div class="plan-footer">
                     <div class="total-earn">Journalier : <strong>30%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(50000)">Investir</button>
+                    <button class="action-btn" onclick="buyPack('Pack Diamond', 50000, 15000, 30)">Investir</button>
                 </div>
             </div>
 
@@ -187,13 +193,13 @@
                     <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Pour gros volumes.</p>
                 </div>
                 <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>100 000 FCFA</span></div>
+                    <div class="stat-box"><label>Prix</label><span>100 000 FCFA</span></div>
                     <div class="stat-box"><label>Gain / jour</label><span class="green">35 000 FCFA</span></div>
                     <div class="stat-box"><label>Rendement</label><span>35%</span></div>
                 </div>
                 <div class="plan-footer">
                     <div class="total-earn">Journalier : <strong>35%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(100000)">Investir</button>
+                    <button class="action-btn" onclick="buyPack('Pack Master', 100000, 35000, 35)">Investir</button>
                 </div>
             </div>
 
@@ -204,28 +210,33 @@
                     <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Performance maximale exclusive.</p>
                 </div>
                 <div class="plan-stats" style="margin: 0 16px 14px 16px;">
-                    <div class="stat-box"><label>Dépôt</label><span>1 000 000 FCFA</span></div>
+                    <div class="stat-box"><label>Prix</label><span>1 000 000 FCFA</span></div>
                     <div class="stat-box"><label>Gain / jour</label><span class="green">500 000 FCFA</span></div>
                     <div class="stat-box"><label>Rendement</label><span>50%</span></div>
                 </div>
                 <div class="plan-footer">
                     <div class="total-earn">Journalier : <strong>50%</strong></div>
-                    <button class="action-btn" onclick="openDepositWithAmount(1000000)">Investir</button>
+                    <button class="action-btn" onclick="buyPack('Pack VIP Elite', 1000000, 500000, 50)">Investir</button>
                 </div>
             </div>
         </div>
 
-        <!-- LIGNES -->
+        <!-- LIGNES DE PRODUCTION -->
         <div id="tab-lignes" class="page-content">
-            <h3 style="margin-bottom: 15px; font-size: 18px;">Lignes de production</h3>
-            <p style="font-size: 14px; color: #64748b;">Consultez l'onglet Accueil pour choisir et souscrire directement à vos packs.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="font-size: 18px;">Mes Lignes de production</h3>
+                <span id="totalDailyYieldBadge" class="active-badge">0 FCFA / jour</span>
+            </div>
+            <div id="purchasedPacksContainer">
+                <p style="font-size: 14px; color: #64748b;">Vous n'avez acheté aucun pack pour le moment. Rechargez votre solde dépôt puis investissez depuis l'onglet Accueil.</p>
+            </div>
         </div>
 
         <!-- ÉQUIPE -->
         <div id="tab-equipe" class="page-content">
             <h3 style="margin-bottom: 15px; font-size: 18px;">Parrainage & Équipe</h3>
             <div class="banner-bonus" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">
-                <h3>Lien d'invitation</h3>
+                <h3>Lien d'invitation (17% sur le 1er dépôt)</h3>
                 <p id="refLinkDisplay" style="font-size: 14px; margin: 8px 0; word-break: break-all;">Connectez-vous pour voir votre lien</p>
                 <button style="background: white; color: #1d4ed8; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px;" onclick="copyRefLink(this)">Copier le lien</button>
             </div>
@@ -241,9 +252,15 @@
                         <p id="profilePhone" style="font-size: 13px; opacity: 0.85;">Non connecté</p>
                     </div>
                 </div>
-                <div class="balance-box">
-                    <span style="font-size: 11px; opacity: 0.85; display: block;">SOLDE ACTUEL (Bonus + Gains)</span>
-                    <strong id="profileBalance" style="font-size: 24px;">0 FCFA</strong>
+                <div class="balance-grid">
+                    <div class="balance-box">
+                        <span style="font-size: 10px; opacity: 0.85; display: block;">SOLDE DÉPÔT (Pour Packs)</span>
+                        <strong id="depositBalanceDisplay" style="font-size: 18px;">0 FCFA</strong>
+                    </div>
+                    <div class="balance-box">
+                        <span style="font-size: 10px; opacity: 0.85; display: block;">SOLDE RETIRABLE (Gains)</span>
+                        <strong id="profileBalance" style="font-size: 18px;">0 FCFA</strong>
+                    </div>
                 </div>
             </div>
 
@@ -338,6 +355,7 @@
             <div class="modal-card">
                 <button class="close-modal" onclick="closeWithdrawModal()">✕</button>
                 <h3 style="margin-bottom: 16px; font-size: 18px;">Demande de Retrait</h3>
+                <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Seuls vos gains générés et bonus sont retirables (le solde dépôt est réservé aux packs).</p>
                 <form onsubmit="handleWithdraw(event)">
                     <div class="input-group">
                         <label>Montant à retirer (FCFA)</label>
@@ -367,7 +385,7 @@
                     <button class="tab-opt" id="adminTabWit" onclick="switchAdminTab('withdrawals')">Retraits</button>
                 </div>
                 <div style="margin-bottom: 12px;">
-                    <button onclick="triggerDailyYield()" style="width:100%; background:#2563eb; color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">⚡ Simuler les gains de 24h (Paliers)</button>
+                    <button onclick="triggerDailyYield()" style="width:100%; background:#2563eb; color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">⚡ Simuler les gains de 24h (Packs Actifs)</button>
                 </div>
                 <div id="adminListContent" style="display: flex; flex-direction: column; gap: 10px; max-height: 50vh; overflow-y: auto;"></div>
             </div>
@@ -391,23 +409,39 @@
     <script>
         let currentMode = 'login';
         let currentUser = null;
-        let currentBalance = 0;
+        let depositBalance = 0;  // Argent déposé (non retirable, sert à acheter des packs)
+        let currentBalance = 0;  // Argent retirable (bonus + gains des packs + commissions parrainage)
         let adminCurrentTab = 'deposits';
         let historyCurrentTab = 'deposits';
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const logoEl = document.querySelector('.logo');
-            if(logoEl) {
-                logoEl.addEventListener('dblclick', openAdminPanel);
+        // Capturer le parrain dès l'ouverture du lien ?ref=...
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref');
+            if (refCode) {
+                localStorage.setItem('nexyield_ref_by', refCode);
             }
         });
+
+        // Accès Admin sécurisé (taper ouvrirAdminSecret() dans la console F12)
+        function ouvrirAdminSecret() {
+            const mdp = prompt("Entrez le mot de passe administrateur :");
+            if (mdp === "admin123") { // Changez ce mot de passe si souhaité
+                openAdminPanel();
+            } else if (mdp !== null) {
+                alert("Mot de passe incorrect.");
+            }
+        }
 
         function switchTab(tabId, btnElement) {
             document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
             if(btnElement) btnElement.classList.add('active');
-            if(currentUser) refreshBalance();
+            if(currentUser) {
+                refreshBalance();
+                if(tabId === 'lignes') renderPurchasedPacks();
+            }
         }
 
         function openAuthModal(mode) { document.getElementById('authModal').style.display = 'flex'; switchAuthMode(mode); }
@@ -417,6 +451,129 @@
             document.getElementById('modalTabLogin').classList.toggle('active', mode === 'login');
             document.getElementById('modalTabRegister').classList.toggle('active', mode === 'register');
             document.getElementById('submitBtnText').innerText = mode === 'login' ? 'Se connecter' : 'Créer un compte (+800 FCFA)';
+        }
+
+        // ==========================================
+        // GESTION DES SOLDES & STOCKAGE UTILISATEUR
+        // ==========================================
+        function getUserStorageKey(suffix) {
+            return `nexyield_${currentUser}_${suffix}`;
+        }
+
+        function syncUserBalancesToUI() {
+            if (!currentUser) return;
+            // Charger le solde dépôt et les packs depuis le stockage local lié au compte
+            const savedDep = localStorage.getItem(getUserStorageKey('depositBalance'));
+            if (savedDep !== null) depositBalance = parseFloat(savedDep);
+
+            const savedRet = localStorage.getItem(getUserStorageKey('withdrawableBalance'));
+            if (savedRet !== null) currentBalance = parseFloat(savedRet);
+
+            document.getElementById('depositBalanceDisplay').innerText = depositBalance.toLocaleString('fr-FR') + ' FCFA';
+            document.getElementById('homeDepositBalance').innerText = depositBalance.toLocaleString('fr-FR') + ' FCFA';
+            document.getElementById('profileBalance').innerText = currentBalance.toLocaleString('fr-FR') + ' FCFA';
+        }
+
+        function saveLocalBalances() {
+            if (!currentUser) return;
+            localStorage.setItem(getUserStorageKey('depositBalance'), depositBalance);
+            localStorage.setItem(getUserStorageKey('withdrawableBalance'), currentBalance);
+            syncUserBalancesToUI();
+        }
+
+        // ==========================================
+        // ACHAT DE PACKS & LIGNES DE PRODUCTION
+        // ==========================================
+        function getPurchasedPacks() {
+            if (!currentUser) return [];
+            return JSON.parse(localStorage.getItem(getUserStorageKey('packs')) || '[]');
+        }
+
+        function buyPack(name, price, dailyGain, percent) {
+            if (!currentUser) {
+                alert("Connectez-vous d'abord pour investir.");
+                openAuthModal('login');
+                return;
+            }
+
+            if (depositBalance < price) {
+                alert(`Solde dépôt insuffisant (${depositBalance.toLocaleString('fr-FR')} FCFA disponibles). Vous devez effectuer un dépôt de ${price.toLocaleString('fr-FR')} FCFA pour activer le ${name}.`);
+                openDepositWithAmount(price);
+                return;
+            }
+
+            if (!confirm(`Confirmer l'achat de ${name} pour ${price.toLocaleString('fr-FR')} FCFA ?\nGain généré : ${dailyGain.toLocaleString('fr-FR')} FCFA / jour.`)) {
+                return;
+            }
+
+            // Déduire uniquement du solde dépôt non-retirable
+            depositBalance -= price;
+            saveLocalBalances();
+
+            // Enregistrer le pack dans les lignes de production
+            const packs = getPurchasedPacks();
+            packs.push({
+                id: Date.now(),
+                name,
+                price,
+                dailyGain,
+                percent,
+                date: new Date().toLocaleDateString('fr-FR')
+            });
+            localStorage.setItem(getUserStorageKey('packs'), JSON.stringify(packs));
+
+            alert(`Félicitations ! ${name} activé avec succès. Retrouvez-le dans l'onglet "Lignes".`);
+            renderPurchasedPacks();
+        }
+
+        function renderPurchasedPacks() {
+            const container = document.getElementById('purchasedPacksContainer');
+            const badge = document.getElementById('totalDailyYieldBadge');
+            const packs = getPurchasedPacks();
+
+            if (!currentUser || packs.length === 0) {
+                badge.innerText = '0 FCFA / jour';
+                container.innerHTML = '<p style="font-size: 14px; color: #64748b;">Vous n\'avez acheté aucun pack pour le moment. Rechargez votre solde dépôt puis investissez depuis l\'onglet Accueil.</p>';
+                return;
+            }
+
+            const totalDaily = packs.reduce((sum, p) => sum + p.dailyGain, 0);
+            badge.innerText = `+${totalDaily.toLocaleString('fr-FR')} FCFA / jour`;
+
+            container.innerHTML = packs.map(p => `
+                <div class="plan-card">
+                    <div class="plan-body" style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h4 class="plan-title" style="margin-bottom:2px;">${p.name}</h4>
+                            <span style="font-size:12px; color:#64748b;">Acheté le ${p.date}</span>
+                        </div>
+                        <span class="active-badge">En production</span>
+                    </div>
+                    <div class="plan-stats" style="margin: 10px 16px 0 16px; border-bottom:none;">
+                        <div class="stat-box"><label>Investi</label><span>${p.price.toLocaleString('fr-FR')} FCFA</span></div>
+                        <div class="stat-box"><label>Gain / jour</label><span class="green">+${p.dailyGain.toLocaleString('fr-FR')} FCFA</span></div>
+                        <div class="stat-box"><label>Taux</label><span>${p.percent}%</span></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==========================================
+        // PARRAINAGE (COPIE DU LIEN + 17% 1ER DÉPÔT)
+        // ==========================================
+        function copyRefLink(btnElement) {
+            if (!currentUser) {
+                alert("Connectez-vous pour obtenir votre lien d'invitation.");
+                openAuthModal('login');
+                return;
+            }
+            const link = window.location.origin + window.location.pathname + '?ref=' + encodeURIComponent(currentUser);
+            navigator.clipboard.writeText(link).then(() => {
+                btnElement.innerText = 'Lien copié !';
+                setTimeout(() => btnElement.innerText = 'Copier le lien', 2000);
+            }).catch(() => {
+                prompt("Copiez votre lien d'invitation :", link);
+            });
         }
 
         // ==========================================
@@ -435,7 +592,7 @@
             if(!currentUser) { alert('Connectez-vous d\'abord.'); openAuthModal('login'); return; }
             selectedDepositAmount = amount;
             document.querySelectorAll('.amount-option').forEach(el => {
-                const btnText = el.innerText.replace(/\s+/g, '').replace('FCFA', '').replace('VIP', '');
+                const btnText = el.innerText.replace(/\s+/g, '').replace('FCFA', '').replace('(VIP)', '');
                 if(parseInt(btnText) === amount) el.classList.add('selected');
                 else el.classList.remove('selected');
             });
@@ -469,7 +626,7 @@
             e.preventDefault();
             const msg = document.getElementById('depositMessage');
             msg.style.color = '#16a34a';
-            msg.innerText = "Demande de dépôt enregistrée !";
+            msg.innerText = "Demande de dépôt enregistrée ! En attente de validation.";
             
             try {
                 await fetch('/api/deposit', {
@@ -484,7 +641,6 @@
                 });
             } catch(err) {}
 
-            // Fermeture automatique de la modale après 1.5s
             setTimeout(() => {
                 closeDepositModal();
                 msg.innerText = '';
@@ -518,6 +674,12 @@
             const msg = document.getElementById('withdrawMessage');
             const btn = document.getElementById('withdrawBtn');
 
+            if (amount > currentBalance) {
+                msg.style.color = '#ef4444';
+                msg.innerText = `Solde retirable insuffisant (${currentBalance.toLocaleString('fr-FR')} FCFA). Votre solde dépôt n'est pas retirable.`;
+                return;
+            }
+
             btn.disabled = true;
             msg.style.color = '#d97706';
             msg.innerText = '⏳ Traitement en cours...';
@@ -535,12 +697,11 @@
                 const data = await res.json();
 
                 if(data.success) {
-                    currentBalance = data.balance;
-                    document.getElementById('profileBalance').innerText = currentBalance.toLocaleString('fr-FR') + ' FCFA';
+                    currentBalance = Math.max(0, currentBalance - amount);
+                    saveLocalBalances();
                     msg.style.color = '#16a34a';
                     msg.innerText = '✅ Retrait pris en compte !';
                     
-                    // Réinitialisation et fermeture automatique après 1.5s
                     setTimeout(() => {
                         closeWithdrawModal();
                         document.getElementById('withdrawAmount').value = '';
@@ -563,11 +724,17 @@
 
         async function refreshBalance() {
             if(!currentUser) return;
-            const res = await fetch('/api/user/' + encodeURIComponent(currentUser));
-            const data = await res.json();
-            if(data.success) {
-                currentBalance = data.balance;
-                document.getElementById('profileBalance').innerText = currentBalance.toLocaleString('fr-FR') + ' FCFA';
+            try {
+                const res = await fetch('/api/user/' + encodeURIComponent(currentUser));
+                const data = await res.json();
+                if(data.success) {
+                    // On synchronise si le serveur renvoie les soldes séparés, sinon on garde l'état local
+                    if (typeof data.depositBalance === 'number') depositBalance = data.depositBalance;
+                    if (typeof data.withdrawableBalance === 'number') currentBalance = data.withdrawableBalance;
+                    saveLocalBalances();
+                }
+            } catch(err) {
+                syncUserBalancesToUI();
             }
         }
 
@@ -675,7 +842,7 @@
                         <div><strong>Dépôt :</strong> ${d.amount.toLocaleString()} FCFA (${d.method})</div>
                         <div>Client : ${d.userPhone} | Exp : ${d.senderPhone}</div>
                         <div>Statut : <b>${d.status}</b></div>
-                        ${d.status === 'EN ATTENTE' ? `<div style="display:flex;gap:8px;margin-top:8px;"><button onclick="verifyDeposit(${d.id}, 'APPROVE')" style="flex:1;background:#16a34a;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Valider</button><button onclick="verifyDeposit(${d.id}, 'REJECT')" style="flex:1;background:#ef4444;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Rejeter</button></div>` : ''}
+                        ${d.status === 'EN ATTENTE' ? `<div style="display:flex;gap:8px;margin-top:8px;"><button onclick="verifyDeposit(${d.id}, 'APPROVE', '${d.userPhone}', ${d.amount})" style="flex:1;background:#16a34a;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Valider</button><button onclick="verifyDeposit(${d.id}, 'REJECT', '${d.userPhone}', ${d.amount})" style="flex:1;background:#ef4444;color:white;border:none;padding:6px;border-radius:6px;font-weight:bold;cursor:pointer;">Rejeter</button></div>` : ''}
                     </div>
                 `).join('');
             } else {
@@ -694,8 +861,34 @@
             }
         }
 
-        async function verifyDeposit(id, action) {
-            await fetch('/api/admin/verify-deposit', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({depositId: id, action}) });
+        async function verifyDeposit(id, action, userPhone, amount) {
+            await fetch('/api/admin/verify-deposit', { 
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify({depositId: id, action}) 
+            });
+
+            if (action === 'APPROVE' && userPhone && amount) {
+                // 1. Créditer le SOLDE DÉPÔT (non retirable) de l'utilisateur
+                const userDepKey = `nexyield_${userPhone}_depositBalance`;
+                const prevDep = parseFloat(localStorage.getItem(userDepKey) || '0');
+                localStorage.setItem(userDepKey, prevDep + amount);
+
+                // 2. Vérifier si c'est le PREMIER dépôt d'un filleul -> 17% au parrain
+                const firstDepFlag = `nexyield_${userPhone}_first_deposit_done`;
+                const sponsorPhone = localStorage.getItem(`nexyield_${userPhone}_sponsor`);
+                if (sponsorPhone && !localStorage.getItem(firstDepFlag)) {
+                    const commission = Math.round(amount * 0.17);
+                    const sponsorRetKey = `nexyield_${sponsorPhone}_withdrawableBalance`;
+                    const prevSponsorBal = parseFloat(localStorage.getItem(sponsorRetKey) || '800');
+                    localStorage.setItem(sponsorRetKey, prevSponsorBal + commission);
+                    localStorage.setItem(firstDepFlag, 'true');
+                }
+
+                if (currentUser === userPhone || currentUser === sponsorPhone) {
+                    syncUserBalancesToUI();
+                }
+            }
             loadAdminData();
         }
 
@@ -705,9 +898,24 @@
         }
 
         async function triggerDailyYield() {
-            const res = await fetch('/api/admin/trigger-daily-yield', { method: 'POST' });
-            const data = await res.json();
-            alert(data.message);
+            try {
+                await fetch('/api/admin/trigger-daily-yield', { method: 'POST' });
+            } catch(e) {}
+
+            // Calculer et verser les gains journaliers des packs actifs dans le solde retirable
+            if (currentUser) {
+                const packs = getPurchasedPacks();
+                const totalGain = packs.reduce((sum, p) => sum + p.dailyGain, 0);
+                if (totalGain > 0) {
+                    currentBalance += totalGain;
+                    saveLocalBalances();
+                    alert(`Gains de 24h distribués : +${totalGain.toLocaleString('fr-FR')} FCFA ajoutés à votre solde retirable !`);
+                } else {
+                    alert("Aucun pack actif sur ce compte pour générer des gains.");
+                }
+            } else {
+                alert("Simulation exécutée.");
+            }
         }
 
         async function handleAuthSubmit(e) {
@@ -716,7 +924,7 @@
             const password = document.getElementById('authPassword').value;
             
             const urlParams = new URLSearchParams(window.location.search);
-            const refBy = urlParams.get('ref') || null;
+            const refBy = urlParams.get('ref') || localStorage.getItem('nexyield_ref_by') || null;
 
             const res = await fetch(currentMode === 'register' ? '/api/register' : '/api/login', {
                 method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({phone, password, refBy})
@@ -727,27 +935,46 @@
             msg.innerText = data.message || data.error;
 
             if(data.success) {
+                if (currentMode === 'register') {
+                    // Initialiser les soldes séparés à l'inscription : 0 FCFA dépôt, 800 FCFA bonus retirable
+                    localStorage.setItem(`nexyield_${phone}_depositBalance`, '0');
+                    localStorage.setItem(`nexyield_${phone}_withdrawableBalance`, String(data.balance || 800));
+                    if (refBy && refBy !== phone) {
+                        localStorage.setItem(`nexyield_${phone}_sponsor`, refBy);
+                    }
+                }
+
                 setTimeout(() => {
                     currentUser = phone;
-                    currentBalance = data.balance;
+                    if (localStorage.getItem(getUserStorageKey('withdrawableBalance')) === null) {
+                        localStorage.setItem(getUserStorageKey('withdrawableBalance'), String(data.balance || 0));
+                    }
+                    if (localStorage.getItem(getUserStorageKey('depositBalance')) === null) {
+                        localStorage.setItem(getUserStorageKey('depositBalance'), '0');
+                    }
+
                     document.getElementById('headerAuthBtns').style.display = 'none';
                     document.getElementById('profilePhone').innerText = phone;
                     document.getElementById('profileAvatar').innerText = phone.slice(-2);
-                    document.getElementById('profileBalance').innerText = currentBalance.toLocaleString('fr-FR') + ' FCFA';
+                    syncUserBalancesToUI();
+                    renderPurchasedPacks();
                     document.getElementById('logoutRow').style.display = 'flex';
-                    document.getElementById('refLinkDisplay').innerText = window.location.origin + '/?ref=' + phone;
+                    document.getElementById('refLinkDisplay').innerText = window.location.origin + window.location.pathname + '?ref=' + phone;
                     document.getElementById('authModal').style.display = 'none';
                 }, 800);
             }
         }
 
         function logoutUser() {
-            currentUser = null; currentBalance = 0;
+            currentUser = null; currentBalance = 0; depositBalance = 0;
             document.getElementById('headerAuthBtns').style.display = 'flex';
             document.getElementById('profilePhone').innerText = 'Non connecté';
             document.getElementById('profileBalance').innerText = '0 FCFA';
+            document.getElementById('depositBalanceDisplay').innerText = '0 FCFA';
+            document.getElementById('homeDepositBalance').innerText = '0 FCFA';
             document.getElementById('logoutRow').style.display = 'none';
             document.getElementById('refLinkDisplay').innerText = 'Connectez-vous pour voir votre lien';
+            renderPurchasedPacks();
             switchTab('accueil', document.querySelector('.nav-item'));
         }
     </script>
