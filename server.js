@@ -7,12 +7,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Base de données centrale en mémoire sur le serveur
 let db = {
-    users: {},       // { phone: { password, depositBalance, withdrawableBalance, sponsor, firstDepositDone } }
+    users: {},       // { phone: { password, depositBalance, withdrawableBalance, sponsor, firstDepositDone, packs } }
     deposits: [],    // Liste de tous les dépôts
     withdrawals: []  // Liste de tous les retraits
 };
 
-// 1. Inscription (avec capture du parrain "refBy")
+// 1. Inscription (avec capture du parrain)
 app.post('/api/register', (req, res) => {
     const { phone, password, refBy } = req.body;
     if (!phone || !password) {
@@ -22,19 +22,13 @@ app.post('/api/register', (req, res) => {
         return res.status(400).json({ success: false, error: "Ce numéro est déjà utilisé." });
     }
 
-    // Recherche si le code parrain (ex: NX825370) correspond au numéro d'un utilisateur existant
-    let actualSponsor = null;
-    if (refBy) {
-        // Si refBy est directement un numéro ou s'il s'agit d'un code, on l'associe
-        actualSponsor = refBy;
-    }
-
     db.users[phone] = {
         password: password,
         depositBalance: 0,
         withdrawableBalance: 800, // Bonus de bienvenue
-        sponsor: actualSponsor,
-        firstDepositDone: false
+        sponsor: refBy || null,
+        firstDepositDone: false,
+        packs: []
     };
 
     res.json({ success: true, message: "Compte créé avec succès ! +800 FCFA de bonus.", balance: 800 });
@@ -57,14 +51,19 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// 3. Récupérer les soldes d'un utilisateur
+// 3. Récupérer les soldes et packs d'un utilisateur
 app.get('/api/user/:phone', (req, res) => {
     const phone = req.params.phone;
     const user = db.users[phone];
     if (!user) {
         return res.status(404).json({ success: false, error: "Utilisateur introuvable." });
     }
-    res.json({ success: true, depositBalance: user.depositBalance, withdrawableBalance: user.withdrawableBalance });
+    res.json({ 
+        success: true, 
+        depositBalance: user.depositBalance, 
+        withdrawableBalance: user.withdrawableBalance,
+        packs: user.packs || []
+    });
 });
 
 // 4. Récupérer l'historique d'un utilisateur (Dépôts & Retraits)
@@ -96,7 +95,40 @@ app.post('/api/deposit', (req, res) => {
     res.json({ success: true, message: "Demande de dépôt enregistrée." });
 });
 
-// 6. Soumettre un retrait
+// 6. Acheter un pack (déduit du solde dépôt sur le serveur)
+app.post('/api/buy-pack', (req, res) => {
+    const { userPhone, name, price, dailyGain, percent } = req.body;
+    const user = db.users[userPhone];
+
+    if (!user) {
+        return res.status(404).json({ success: false, error: "Utilisateur introuvable." });
+    }
+
+    if (user.depositBalance < price) {
+        return res.status(400).json({ success: false, error: "Solde dépôt insuffisant sur le serveur." });
+    }
+
+    user.depositBalance -= price;
+    if (!user.packs) user.packs = [];
+
+    const newPack = {
+        id: Date.now(),
+        name,
+        price,
+        dailyGain,
+        percent,
+        date: new Date().toLocaleDateString('fr-FR')
+    };
+    user.packs.push(newPack);
+
+    res.json({ 
+        success: true, 
+        depositBalance: user.depositBalance,
+        packs: user.packs 
+    });
+});
+
+// 7. Soumettre un retrait
 app.post('/api/withdraw', (req, res) => {
     const { userPhone, amount, withdrawPhone } = req.body;
     const user = db.users[userPhone];
@@ -123,7 +155,7 @@ app.post('/api/withdraw', (req, res) => {
     res.json({ success: true, message: "Retrait pris en compte." });
 });
 
-// 7. Données globales pour le Panneau Admin
+// 8. Données globales pour le Panneau Admin
 app.get('/api/admin/data', (req, res) => {
     res.json({
         deposits: db.deposits,
@@ -132,7 +164,7 @@ app.get('/api/admin/data', (req, res) => {
     });
 });
 
-// 8. Validation / Rejet d'un dépôt par l'Admin (VERSET LES 17% AU PARRAIN ICI)
+// 9. Validation / Rejet d'un dépôt par l'Admin (avec versement auto des 17% au parrain)
 app.post('/api/admin/verify-deposit', (req, res) => {
     const { depositId, action } = req.body;
     const deposit = db.deposits.find(d => d.id == depositId);
@@ -146,19 +178,15 @@ app.post('/api/admin/verify-deposit', (req, res) => {
         const userObj = db.users[deposit.userPhone];
         
         if (userObj) {
-            // Créditer le solde dépôt du client
             userObj.depositBalance += deposit.amount;
 
-            // Gestion automatique du parrainage (17% sur le premier dépôt validé)
+            // Gestion du parrainage (17% sur le premier dépôt validé)
             if (userObj.sponsor && !userObj.firstDepositDone) {
-                // Cherche le parrain soit par son numéro direct, soit s'il est enregistré
-                let sponsorPhone = userObj.sponsor;
-                
+                const sponsorPhone = userObj.sponsor;
                 if (db.users[sponsorPhone]) {
                     const commission = Math.round(deposit.amount * 0.17);
                     db.users[sponsorPhone].withdrawableBalance += commission;
                     userObj.firstDepositDone = true;
-                    console.log(`[Parrainage] +${commission} FCFA versés au parrain ${sponsorPhone}`);
                 }
             }
         }
@@ -169,7 +197,7 @@ app.post('/api/admin/verify-deposit', (req, res) => {
     res.json({ success: true, message: "Dépôt mis à jour." });
 });
 
-// 9. Validation d'un retrait par l'Admin
+// 10. Validation d'un retrait par l'Admin
 app.post('/api/admin/verify-withdrawal', (req, res) => {
     const { withdrawalId, action } = req.body;
     const withdrawal = db.withdrawals.find(w => w.id == withdrawalId);
@@ -182,7 +210,6 @@ app.post('/api/admin/verify-withdrawal', (req, res) => {
     res.json({ success: true });
 });
 
-// Lancement du serveur
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Serveur NexYield en écoute sur le port ${PORT}`);
