@@ -420,10 +420,8 @@
         let adminCurrentTab = 'deposits';
         let historyCurrentTab = 'deposits';
 
-        // Détection automatique de l'URL de base (Render ou Localhost)
-        const BASE_URL = window.location.hostname.includes('localhost') 
-            ? window.location.origin 
-            : 'https://nexyield-app.onrender.com';
+        // URL officielle en production sur Render
+        const PRODUCTION_URL = 'https://nexyield-app.onrender.com';
 
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -576,7 +574,8 @@
                 return;
             }
             const userCode = getOrCreateUserRefCode(currentUser);
-            const link = BASE_URL + '/?ref=' + userCode;
+            // Utilise toujours l'URL Render en production pour que ça fonctionne sur tous les téléphones (Safari/Chrome)
+            const link = PRODUCTION_URL + '/?ref=' + userCode;
             
             navigator.clipboard.writeText(link).then(() => {
                 btnElement.innerText = 'Lien copié !';
@@ -954,7 +953,7 @@
                     document.getElementById('logoutRow').style.display = 'flex';
                     
                     const userCode = getOrCreateUserRefCode(phone);
-                    document.getElementById('refLinkDisplay').innerText = (window.location.hostname.includes('localhost') ? window.location.origin : 'https://nexyield-app.onrender.com') + '/?ref=' + userCode;
+                    document.getElementById('refLinkDisplay').innerText = PRODUCTION_URL + '/?ref=' + userCode;
                     document.getElementById('authModal').style.display = 'none';
                 }, 800);
             }
