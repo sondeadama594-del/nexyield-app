@@ -6,8 +6,8 @@
     <title>NexYield - Infrastructure & Investissement</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: #e2e8f0; color: #0f172a; display: flex; justify-content: center; min-height: 100vh; }
-        .app-container { width: 100%; max-width: 480px; background: #f8fafc; display: flex; flex-direction: column; min-height: 100vh; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.1); padding-bottom: 85px; }
+        body { background: #0f172a; color: #0f172a; display: flex; justify-content: center; min-height: 100vh; }
+        .app-container { width: 100%; max-width: 480px; background: #f8fafc; display: flex; flex-direction: column; min-height: 100vh; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.3); padding-bottom: 85px; }
         
         /* Header Top */
         .app-header { padding: 14px 18px; background: #ffffff; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #f1f5f9; }
@@ -16,15 +16,45 @@
         .logo { font-size: 20px; font-weight: 800; color: #dc2626; letter-spacing: -0.5px; }
         .logo span { color: #0f172a; }
         .admin-btn-quick { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; }
-        .auth-pill { display: flex; gap: 8px; align-items: center; }
-        .pill-btn { padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; transition: 0.2s; }
-        .pill-login { background: #f1f5f9; color: #0f172a; }
-        .pill-register { background: #dc2626; color: white; }
         .notif-bell { position: relative; cursor: pointer; padding: 4px; color: #0f172a; }
         .notif-dot { position: absolute; top: 3px; right: 4px; width: 7px; height: 7px; background: #dc2626; border-radius: 50%; }
 
         .page-content { flex: 1; display: none; }
         .page-content.active { display: block; }
+
+        /* Écran de Connexion / Inscription plein écran ultra stylé (inspiré des captures) */
+        #authScreen {
+            position: fixed;
+            top: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 480px; height: 100vh;
+            background: linear-gradient(to bottom, rgba(15,23,42,0.4), rgba(15,23,42,0.95)), url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80') center/cover no-repeat;
+            z-index: 9999;
+            display: flex; flex-direction: column; justify-content: flex-end;
+            overflow-y: auto;
+        }
+        .auth-card-floating {
+            background: #ffffff;
+            width: 100%;
+            border-radius: 28px 28px 0 0;
+            padding: 24px 20px 35px 20px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.3);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .auth-top-header { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+        .auth-title-big { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+        .auth-subtitle { font-size: 13px; color: #64748b; margin-bottom: 20px; }
+        
+        .tab-switch-auth { display: flex; background: #f1f5f9; padding: 4px; border-radius: 14px; margin-bottom: 20px; }
+        .tab-opt-auth { flex: 1; padding: 12px; border: none; background: none; font-weight: 700; font-size: 14px; border-radius: 10px; cursor: pointer; color: #64748b; text-align: center; transition: 0.2s; }
+        .tab-opt-auth.active { background: white; color: #0f172a; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+        .phone-input-group { display: flex; border: 1.5px solid #cbd5e1; border-radius: 12px; overflow: hidden; background: white; }
+        .prefix-select { background: #f8fafc; border: none; border-right: 1px solid #e2e8f0; padding: 0 12px; font-weight: 700; font-size: 14px; color: #0f172a; outline: none; }
+        .phone-input-group input { border: none; outline: none; padding: 12px 14px; font-size: 14px; width: 100%; background: transparent; }
+
+        .welcome-bonus-box { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; padding: 14px 16px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .welcome-bonus-box .amount { font-size: 20px; font-weight: 900; color: #38bdf8; }
 
         /* Hero Banner Accueil */
         .hero-banner { position: relative; height: 320px; background: linear-gradient(to bottom, rgba(15,23,42,0.35), rgba(15,23,42,0.92)), url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80') center/cover no-repeat; color: white; padding: 24px 20px; display: flex; flex-direction: column; justify-content: flex-end; }
@@ -54,14 +84,12 @@
         .prod-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; }
         .prod-total { font-size: 12px; color: #64748b; font-weight: 500; }
         .invest-btn { background: #0f172a; color: white; border: none; padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .invest-btn:active { transform: scale(0.97); }
 
-        /* Page Lignes Tabs */
         .sub-tabs { display: flex; gap: 20px; border-bottom: 1px solid #e2e8f0; padding: 0 18px; background: white; }
         .sub-tab { padding: 14px 4px; font-size: 14px; font-weight: 600; color: #64748b; border-bottom: 2px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; }
         .sub-tab.active { color: #0f172a; font-weight: 800; border-bottom-color: #0f172a; }
 
-        /* Page Équipe (Design identique à la capture) */
+        /* Équipe */
         .team-hero { background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%); color: white; padding: 24px 20px 65px 20px; }
         .team-hero-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
         .team-hero-top h2 { font-size: 20px; font-weight: 800; }
@@ -84,7 +112,6 @@
         .invite-btns-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .outline-btn { background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; font-size: 13px; font-weight: 700; color: #0f172a; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; }
 
-        /* Liste des membres de l'équipe */
         .member-list-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; margin-top: 12px; }
         .member-row { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; }
         .member-row:last-child { border-bottom: none; }
@@ -93,7 +120,7 @@
         .member-status-no { font-size: 12px; color: #94a3b8; font-weight: 500; }
         .member-status-yes { font-size: 13px; color: #16a34a; font-weight: 800; }
 
-        /* Page Profil Style Capture */
+        /* Profil */
         .prof-header-wrap { background: white; padding: 20px 18px; border-bottom: 1px solid #f1f5f9; }
         .prof-top-title { font-size: 20px; font-weight: 800; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
         .prof-balance-box { background: #0f172a; color: white; border-radius: 16px; padding: 18px; margin-bottom: 14px; }
@@ -114,46 +141,21 @@
         .service-icon-box { width: 32px; height: 32px; border-radius: 8px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #475569; }
         .service-right { font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 6px; }
 
-        /* Barre de navigation inférieure fixe avec icônes SVG */
+        /* Navigation inférieure */
         nav { 
-            position: fixed; 
-            bottom: 0; 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%; 
-            max-width: 480px; 
-            background: #ffffff; 
-            border-top: 1px solid #e2e8f0; 
-            display: flex; 
-            justify-content: space-around; 
-            padding: 8px 0 10px 0; 
-            z-index: 9999; 
-            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.04);
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 480px; background: #ffffff; 
+            border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; 
+            padding: 8px 0 10px 0; z-index: 999; box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.04);
         }
         .nav-item { 
-            background: none; 
-            border: none; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 4px; 
-            color: #64748b; 
-            font-size: 11px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            padding: 4px 14px;
-            position: relative;
+            background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; 
+            color: #64748b; font-size: 11px; cursor: pointer; font-weight: 600; padding: 4px 14px; position: relative;
         }
         .nav-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; }
         .nav-item.active { color: #0f172a; font-weight: 800; }
         .nav-item.active::before {
-            content: "";
-            position: absolute;
-            top: -8px;
-            width: 24px;
-            height: 3px;
-            background: #dc2626;
-            border-radius: 0 0 3px 3px;
+            content: ""; position: absolute; top: -8px; width: 24px; height: 3px; background: #dc2626; border-radius: 0 0 3px 3px;
         }
 
         /* Modales */
@@ -180,25 +182,82 @@
 <body>
 
     <div class="app-container">
-        <!-- Header global -->
-        <header class="app-header">
+        <!-- ÉCRAN DE CONNEXION / INSCRIPTION INTÉGRÉ AU DÉMARRAGE -->
+        <div id="authScreen">
+            <div class="auth-card-floating">
+                <div class="auth-top-header">
+                    <div class="logo-icon">N</div>
+                    <div class="logo" style="font-size: 18px;">Nex<span>Yield</span></div>
+                </div>
+
+                <div class="tab-switch-auth">
+                    <button class="tab-opt-auth active" id="authTabLogin" onclick="switchAuthScreenMode('login')">Connexion</button>
+                    <button class="tab-opt-auth" id="authTabRegister" onclick="switchAuthScreenMode('register')">Créer un compte</button>
+                </div>
+
+                <div id="registerBonusBanner" style="display: none;" class="welcome-bonus-box">
+                    <div>
+                        <div style="font-size: 11px; color: #94a3b8; font-weight: 700;">BONUS DE BIENVENUE</div>
+                        <div style="font-size: 13px;">Crédité à l'inscription</div>
+                    </div>
+                    <div class="amount">800 FCFA</div>
+                </div>
+
+                <div id="authTitleBlock">
+                    <div class="auth-title-big" id="authScreenTitle">Bon retour</div>
+                    <div class="auth-subtitle" id="authScreenSub">Connectez-vous pour consulter vos lignes, votre solde et votre équipe.</div>
+                </div>
+
+                <form id="mainAuthForm" onsubmit="handleAuthSubmit(event)">
+                    <div class="input-group">
+                        <label>Numéro de téléphone</label>
+                        <div class="phone-input-group">
+                            <select class="prefix-select" id="phonePrefix">
+                                <option value="+226">+226</option>
+                                <option value="+237">+237</option>
+                                <option value="+225">+225</option>
+                                <option value="+223">+223</option>
+                            </select>
+                            <input type="tel" id="authPhone" placeholder="Saisissez votre numéro" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Mot de passe</label>
+                        <input type="password" id="authPassword" placeholder="Saisissez votre mot de passe" required>
+                    </div>
+
+                    <div id="confirmPasswordGroup" class="input-group" style="display: none;">
+                        <label>Confirmer le mot de passe</label>
+                        <input type="password" id="authConfirmPassword" placeholder="Répétez le mot de passe">
+                    </div>
+
+                    <div id="inviteCodeGroup" class="input-group" style="display: none;">
+                        <label>Code d'invitation <span style="font-weight: normal; color: #94a3b8;">(Facultatif)</span></label>
+                        <input type="text" id="authInviteCode" placeholder="Saisissez le code d'invitation">
+                    </div>
+
+                    <button type="submit" class="submit-form-btn" id="authSubmitBtnText">Se connecter →</button>
+                    <div id="formMessage"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Header global (masqué tant que non connecté) -->
+        <header class="app-header" id="mainHeader" style="display:none;">
             <div class="logo-area">
                 <div class="logo-icon">N</div>
                 <div class="logo">Nex<span>Yield</span></div>
                 <button class="admin-btn-quick" onclick="ouvrirAdminSecret()">Admin</button>
             </div>
-            <div class="auth-pill" id="headerAuthBtns">
-                <button class="pill-btn pill-login" onclick="openAuthModal('login')">Connexion</button>
-                <button class="pill-btn pill-register" onclick="openAuthModal('register')">S'inscrire</button>
-            </div>
-            <div class="notif-bell" id="headerBell" style="display:none;" onclick="openHistoryModal()">
+            <div class="notif-bell" onclick="openHistoryModal()">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                 <span class="notif-dot"></span>
             </div>
         </header>
 
         <!-- 1. ONGLET ACCUEIL -->
-        <div id="tab-accueil" class="page-content active">
+        <div id="tab-accueil" class="page-content">
             <div class="hero-banner">
                 <div class="hero-tag">ÉQUIPE & RENDEMENT</div>
                 <h1>Grandir ensemble<br>avec NexYield</h1>
@@ -414,7 +473,7 @@
             </div>
         </div>
 
-        <!-- 3. ONGLET ÉQUIPE (Style exact de la capture) -->
+        <!-- 3. ONGLET ÉQUIPE -->
         <div id="tab-equipe" class="page-content">
             <div class="team-hero">
                 <div class="team-hero-top">
@@ -473,7 +532,7 @@
             </div>
         </div>
 
-        <!-- 4. ONGLET PROFIL (Style exact de la capture) -->
+        <!-- 4. ONGLET PROFIL -->
         <div id="tab-profil" class="page-content">
             <div class="prof-header-wrap">
                 <div class="prof-top-title">
@@ -539,7 +598,7 @@
                 </div>
             </div>
 
-            <div class="service-card" id="logoutRow" style="display: none;">
+            <div class="service-card">
                 <div class="service-row" onclick="logoutUser()">
                     <div class="service-left" style="color:#dc2626;">
                         <div class="service-icon-box" style="background:#fef2f2; color:#dc2626;">🚪</div>
@@ -548,8 +607,9 @@
                 </div>
             </div>
         </div>
-        <!-- Barre de navigation inférieure fixe avec icônes SVG -->
-        <nav>
+
+        <!-- Barre de navigation inférieure fixe (masquée tant que non connecté) -->
+        <nav id="mainNav" style="display:none;">
             <button class="nav-item active" onclick="switchTab('accueil', this)">
                 <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 <span>Accueil</span>
@@ -568,23 +628,7 @@
             </button>
         </nav>
 
-        <!-- MODALES (Auth, Dépôt, Retrait, Admin, Historique) -->
-        <div id="authModal" class="modal">
-            <div class="modal-card">
-                <button class="close-modal" onclick="closeAuthModal()">✕</button>
-                <div class="tab-switch">
-                    <button class="tab-opt active" id="modalTabLogin" onclick="switchAuthMode('login')">Connexion</button>
-                    <button class="tab-opt" id="modalTabRegister" onclick="switchAuthMode('register')">Créer un compte</button>
-                </div>
-                <form id="authForm" onsubmit="handleAuthSubmit(event)">
-                    <div class="input-group"><label>Numéro de téléphone</label><input type="tel" id="authPhone" placeholder="+226 XXXXXXXX" required></div>
-                    <div class="input-group"><label>Mot de passe</label><input type="password" id="authPassword" placeholder="Votre mot de passe" required></div>
-                    <button type="submit" class="submit-form-btn" id="submitBtnText">Se connecter</button>
-                    <div id="formMessage"></div>
-                </form>
-            </div>
-        </div>
-
+        <!-- Modales (Dépôt, Retrait, Admin, Historique) -->
         <div id="depositModal" class="modal">
             <div class="modal-card">
                 <button class="close-modal" onclick="closeDepositModal()">✕</button>
@@ -660,7 +704,7 @@
     </div>
 
     <script>
-        let currentMode = 'login';
+        let currentAuthMode = 'login';
         let currentUser = null;
         let depositBalance = 0;  
         let currentBalance = 0;  
@@ -675,12 +719,104 @@
             const refCode = urlParams.get('ref');
             if (refCode) {
                 localStorage.setItem('nexyield_ref_by', refCode.trim());
+                // Bascule automatique sur l'onglet inscription si l'utilisateur arrive via un lien de parrainage
+                switchAuthScreenMode('register');
+                document.getElementById('authInviteCode').value = refCode.trim();
             }
         });
 
+        function switchAuthScreenMode(mode) {
+            currentAuthMode = mode;
+            document.getElementById('authTabLogin').classList.toggle('active', mode === 'login');
+            document.getElementById('authTabRegister').classList.toggle('active', mode === 'register');
+            
+            const bonusBanner = document.getElementById('registerBonusBanner');
+            const confirmGrp = document.getElementById('confirmPasswordGroup');
+            const inviteGrp = document.getElementById('inviteCodeGroup');
+            const titleEl = document.getElementById('authScreenTitle');
+            const subEl = document.getElementById('authScreenSub');
+            const submitBtn = document.getElementById('authSubmitBtnText');
+
+            if (mode === 'register') {
+                bonusBanner.style.display = 'flex';
+                confirmGrp.style.display = 'block';
+                inviteGrp.style.display = 'block';
+                titleEl.innerText = 'Créez votre compte';
+                subEl.innerText = 'Inscrivez-vous pour bénéficier du bonus de bienvenue et accéder aux lignes.';
+                submitBtn.innerText = 'Créer un compte →';
+            } else {
+                bonusBanner.style.display = 'none';
+                confirmGrp.style.display = 'none';
+                inviteGrp.style.display = 'none';
+                titleEl.innerText = 'Bon retour';
+                subEl.innerText = 'Connectez-vous pour consulter vos lignes, votre solde et votre équipe.';
+                submitBtn.innerText = 'Se connecter →';
+            }
+        }
+
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            const prefix = document.getElementById('phonePrefix').value;
+            const rawPhone = document.getElementById('authPhone').value.trim();
+            const phone = prefix + rawPhone;
+            const password = document.getElementById('authPassword').value;
+            const msg = document.getElementById('formMessage');
+
+            if (currentAuthMode === 'register') {
+                const confirmPass = document.getElementById('authConfirmPassword').value;
+                if (password !== confirmPass) {
+                    msg.style.color = '#dc2626';
+                    msg.innerText = "Les mots de passe ne correspondent pas.";
+                    return;
+                }
+            }
+
+            let refBy = document.getElementById('authInviteCode') ? document.getElementById('authInviteCode').value.trim() : null;
+            if (!refBy) {
+                refBy = new URLSearchParams(window.location.search).get('ref') || localStorage.getItem('nexyield_ref_by') || null;
+            }
+
+            try {
+                const endpoint = currentAuthMode === 'register' ? '/api/register' : '/api/login';
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({phone, password, refBy})
+                });
+                const data = await res.json();
+                
+                msg.style.color = data.success ? '#16a34a' : '#dc2626';
+                msg.innerText = data.message || data.error;
+
+                if (data.success) {
+                    setTimeout(() => {
+                        currentUser = phone;
+                        depositBalance = data.depositBalance || 0;
+                        currentBalance = data.withdrawableBalance || 800;
+                        saveLocalBalances();
+
+                        // Masquer l'écran de connexion et afficher l'application complète
+                        document.getElementById('authScreen').style.display = 'none';
+                        document.getElementById('mainHeader').style.display = 'flex';
+                        document.getElementById('mainNav').style.display = 'flex';
+
+                        document.getElementById('profilePhone').innerText = phone;
+                        document.getElementById('inviteCodeText').innerText = phone.slice(-6).toUpperCase();
+                        document.getElementById('refLinkDisplay').innerText = PRODUCTION_URL + '/?ref=' + encodeURIComponent(phone);
+                        
+                        switchTab('accueil', document.querySelectorAll('.nav-item')[0]);
+                        refreshBalance();
+                    }, 600);
+                }
+            } catch(err) {
+                msg.style.color = '#dc2626';
+                msg.innerText = "Erreur de connexion au serveur.";
+            }
+        }
+
         function ouvrirAdminSecret() {
             const mdp = prompt("Mot de passe admin :");
-            if (mdp === "Bagassi2006") openAdminPanel();
+            if (mdp === "Bagassi667") openAdminPanel();
             else if (mdp !== null) alert("Incorrect.");
         }
 
@@ -693,15 +829,6 @@
                 refreshBalance();
                 if(tabId === 'lignes') renderPurchasedPacks();
             }
-        }
-
-        function openAuthModal(mode) { document.getElementById('authModal').style.display = 'flex'; switchAuthMode(mode); }
-        function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
-        function switchAuthMode(mode) {
-            currentMode = mode;
-            document.getElementById('modalTabLogin').classList.toggle('active', mode === 'login');
-            document.getElementById('modalTabRegister').classList.toggle('active', mode === 'register');
-            document.getElementById('submitBtnText').innerText = mode === 'login' ? 'Se connecter' : 'Créer un compte (+800 FCFA)';
         }
 
         function getUserStorageKey(suffix) { return `nexyield_${currentUser}_${suffix}`; }
@@ -726,7 +853,7 @@
         }
 
         async function buyPack(name, price, dailyGain, percent) {
-            if (!currentUser) { alert("Connectez-vous d'abord."); openAuthModal('login'); return; }
+            if (!currentUser) return;
             if (depositBalance < price) { alert(`Solde dépôt insuffisant (${depositBalance.toLocaleString()} FCFA).`); openDepositWithAmount(price); return; }
             if (!confirm(`Confirmer l'achat de ${name} pour ${price.toLocaleString()} FCFA ?`)) return;
 
@@ -749,7 +876,6 @@
                 }
             } catch (err) { alert("Erreur réseau."); }
         }
-
         function renderPurchasedPacks() {
             const container = document.getElementById('purchasedPacksContainer');
             const badge = document.getElementById('totalDailyYieldBadge');
@@ -793,7 +919,7 @@
         }
 
         function copyRefLink(btnElement) {
-            if (!currentUser) { alert("Connectez-vous."); openAuthModal('login'); return; }
+            if (!currentUser) return;
             const link = PRODUCTION_URL + '/?ref=' + encodeURIComponent(currentUser);
             navigator.clipboard.writeText(link).then(() => {
                 const orig = btnElement.innerHTML;
@@ -809,7 +935,6 @@
         }
 
         function openDepositWithAmount(amount) {
-            if(!currentUser) { alert('Connectez-vous.'); openAuthModal('login'); return; }
             selectedDepositAmount = amount;
             document.querySelectorAll('.amount-option').forEach(el => {
                 const btnText = el.innerText.replace(/\s+/g, '').replace('FCFA', '').replace('(VIP)', '');
@@ -856,7 +981,6 @@
         }
 
         function openWithdrawModal() {
-            if(!currentUser) { alert('Connectez-vous.'); openAuthModal('login'); return; }
             document.getElementById('withdrawPhone').value = currentUser;
             document.getElementById('withdrawModal').style.display = 'flex';
         }
@@ -892,7 +1016,6 @@
                     localStorage.setItem(getUserStorageKey('packs'), JSON.stringify(data.packs || []));
                     saveLocalBalances();
 
-                    // Mise à jour de l'onglet Équipe
                     const earn = data.referralEarnings || 0;
                     document.getElementById('teamEarningsDisplay').innerText = earn.toLocaleString('fr-FR');
                     document.getElementById('teamTotalDisplay').innerText = earn.toLocaleString('fr-FR') + ' FCFA';
@@ -923,7 +1046,6 @@
         }
 
         function openHistoryModal() {
-            if(!currentUser) { alert('Connectez-vous.'); openAuthModal('login'); return; }
             document.getElementById('historyModal').style.display = 'flex';
             loadUserHistory();
         }
@@ -1012,45 +1134,14 @@
             alert("Gains de 24h distribués à tous les packs actifs !");
         }
 
-        async function handleAuthSubmit(e) {
-            e.preventDefault();
-            const phone = document.getElementById('authPhone').value.trim();
-            const password = document.getElementById('authPassword').value;
-            const refBy = new URLSearchParams(window.location.search).get('ref') || localStorage.getItem('nexyield_ref_by') || null;
-
-            const res = await fetch(currentMode === 'register' ? '/api/register' : '/api/login', {
-                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({phone, password, refBy})
-            });
-            const data = await res.json();
-            const msg = document.getElementById('formMessage');
-            msg.style.color = data.success ? '#16a34a' : '#dc2626';
-            msg.innerText = data.message || data.error;
-
-            if(data.success) {
-                setTimeout(() => {
-                    currentUser = phone;
-                    depositBalance = data.depositBalance || 0;
-                    currentBalance = data.withdrawableBalance || 800;
-                    saveLocalBalances();
-                    document.getElementById('headerAuthBtns').style.display = 'none';
-                    document.getElementById('headerBell').style.display = 'block';
-                    document.getElementById('profilePhone').innerText = phone;
-                    document.getElementById('inviteCodeText').innerText = phone.slice(-6).toUpperCase();
-                    document.getElementById('logoutRow').style.display = 'block';
-                    document.getElementById('refLinkDisplay').innerText = PRODUCTION_URL + '/?ref=' + encodeURIComponent(phone);
-                    document.getElementById('authModal').style.display = 'none';
-                    refreshBalance();
-                }, 800);
-            }
-        }
-
         function logoutUser() {
             currentUser = null;
-            document.getElementById('headerAuthBtns').style.display = 'flex';
-            document.getElementById('headerBell').style.display = 'none';
-            document.getElementById('profilePhone').innerText = 'Non connecté';
-            document.getElementById('logoutRow').style.display = 'none';
-            switchTab('accueil', document.querySelectorAll('.nav-item')[0]);
+            // Réafficher l'écran de connexion et masquer l'application
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('mainHeader').style.display = 'none';
+            document.getElementById('mainNav').style.display = 'none';
+            document.getElementById('authPhone').value = '';
+            document.getElementById('authPassword').value = '';
         }
     </script>
 </body>
