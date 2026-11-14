@@ -3,47 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexYield - Investissement & Production</title>
+    <title>NexYield - Infrastructure & Investissement</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: #f1f5f9; color: #1e293b; display: flex; justify-content: center; min-height: 100vh; }
-        .app-container { width: 100%; max-width: 480px; background: #ffffff; display: flex; flex-direction: column; min-height: 100vh; position: relative; box-shadow: 0 0 25px rgba(0,0,0,0.08); padding-bottom: 90px; }
-        .app-header { padding: 18px 20px; background: #ffffff; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
-        .logo-area { display: flex; align-items: center; gap: 8px; }
-        .logo { font-size: 21px; font-weight: 800; color: #0f172a; cursor: pointer; user-select: none; }
-        .logo span { color: #ef4444; }
-        .admin-btn-quick { background: #334155; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
-        .auth-pill { display: flex; gap: 8px; }
-        .pill-btn { padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; }
-        .pill-login { background: #f1f5f9; color: #475569; }
-        .pill-register { background: #ef4444; color: white; }
-        .page-content { flex: 1; padding: 20px; overflow-y: auto; display: none; }
-        .page-content.active { display: block; }
-        .banner-bonus { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; padding: 22px; border-radius: 18px; margin-bottom: 22px; }
-        .banner-bonus h3 { font-size: 14px; margin-bottom: 4px; color: #94a3b8; font-weight: 500; }
-        .banner-bonus .amount { font-size: 30px; font-weight: 800; color: #38bdf8; }
-        .plan-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; margin-bottom: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .plan-body { padding: 16px; padding-bottom: 10px; }
-        .plan-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; color: #0f172a; }
-        .plan-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #f1f5f9; }
-        .stat-box label { font-size: 11px; color: #64748b; display: block; margin-bottom: 2px; }
-        .stat-box span { font-size: 14px; font-weight: 700; color: #0f172a; }
-        .stat-box span.green { color: #16a34a; }
-        .plan-footer { display: flex; justify-content: space-between; align-items: center; padding: 0 16px 16px 16px; }
-        .total-earn { font-size: 12px; color: #64748b; }
-        .total-earn strong { color: #0f172a; }
-        .action-btn { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; }
-        .profile-card { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 24px; border-radius: 20px; margin-bottom: 18px; }
-        .profile-info { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .avatar { width: 54px; height: 54px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; }
-        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .balance-box { background: rgba(0,0,0,0.18); padding: 12px 14px; border-radius: 14px; }
-        .profile-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .prof-btn { background: #f8fafc; border: 1px solid #e2e8f0; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 15px; color: #0f172a; cursor: pointer; text-align: center; }
-        .menu-list { background: white; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; }
-        .menu-item-row { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 14px; font-weight: 500; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: #e2e8f0; color: #0f172a; display: flex; justify-content: center; min-height: 100vh; }
+        .app-container { width: 100%; max-width: 480px; background: #f8fafc; display: flex; flex-direction: column; min-height: 100vh; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.1); padding-bottom: 85px; }
         
-        /* Navigation fixe stable et facile à cliquer */
+        /* Header Top */
+        .app-header { padding: 14px 18px; background: #ffffff; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #f1f5f9; }
+        .logo-area { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #dc2626; display: flex; align-items: center; justify-content: center; color: #dc2626; font-weight: 900; font-size: 14px; }
+        .logo { font-size: 20px; font-weight: 800; color: #dc2626; letter-spacing: -0.5px; }
+        .logo span { color: #0f172a; }
+        .admin-btn-quick { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; }
+        .auth-pill { display: flex; gap: 8px; align-items: center; }
+        .pill-btn { padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; transition: 0.2s; }
+        .pill-login { background: #f1f5f9; color: #0f172a; }
+        .pill-register { background: #dc2626; color: white; }
+        .notif-bell { position: relative; cursor: pointer; padding: 4px; color: #0f172a; }
+        .notif-dot { position: absolute; top: 3px; right: 4px; width: 7px; height: 7px; background: #dc2626; border-radius: 50%; }
+
+        .page-content { flex: 1; display: none; }
+        .page-content.active { display: block; }
+
+        /* Hero Banner Accueil */
+        .hero-banner { position: relative; height: 320px; background: linear-gradient(to bottom, rgba(15,23,42,0.35), rgba(15,23,42,0.92)), url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80') center/cover no-repeat; color: white; padding: 24px 20px; display: flex; flex-direction: column; justify-content: flex-end; }
+        .hero-tag { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #cbd5e1; margin-bottom: 10px; }
+        .hero-tag::before { content: ""; width: 20px; height: 1px; background: #cbd5e1; }
+        .hero-banner h1 { font-size: 28px; font-weight: 800; line-height: 1.15; margin-bottom: 10px; }
+        .hero-banner p { font-size: 13px; color: #cbd5e1; line-height: 1.4; margin-bottom: 18px; max-width: 90%; }
+        .hero-cta { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: white; background: none; border: none; cursor: pointer; padding: 0; }
+        .hero-cta-circle { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); }
+
+        .section-wrap { padding: 20px 18px; }
+        .section-kicker { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
+        .section-heading { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* Cartes Produits Style Industriel */
+        .prod-card { background: #ffffff; border-radius: 16px; overflow: hidden; margin-bottom: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; }
+        .prod-img-wrap { position: relative; height: 150px; background-size: cover; background-position: center; }
+        .plan-badge { position: absolute; top: 12px; right: 12px; background: rgba(15, 23, 42, 0.85); color: white; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; backdrop-filter: blur(4px); }
+        .prod-body { padding: 16px; }
+        .prod-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .prod-title { font-size: 17px; font-weight: 800; color: #0f172a; }
+        .status-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; background: #eff6ff; color: #2563eb; }
+        .prod-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding-bottom: 14px; border-bottom: 1px solid #f1f5f9; }
+        .metric-col label { display: block; font-size: 11px; color: #64748b; margin-bottom: 4px; }
+        .metric-col strong { font-size: 14px; font-weight: 800; color: #0f172a; }
+        .metric-col strong.green { color: #16a34a; }
+        .prod-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; }
+        .prod-total { font-size: 12px; color: #64748b; font-weight: 500; }
+        .invest-btn { background: #0f172a; color: white; border: none; padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .invest-btn:active { transform: scale(0.97); }
+
+        /* Page Lignes Tabs */
+        .sub-tabs { display: flex; gap: 20px; border-bottom: 1px solid #e2e8f0; padding: 0 18px; background: white; }
+        .sub-tab { padding: 14px 4px; font-size: 14px; font-weight: 600; color: #64748b; border-bottom: 2px solid transparent; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; }
+        .sub-tab.active { color: #0f172a; font-weight: 800; border-bottom-color: #0f172a; }
+
+        /* Page Équipe (Design identique à la capture) */
+        .team-hero { background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%); color: white; padding: 24px 20px 65px 20px; }
+        .team-hero-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+        .team-hero-top h2 { font-size: 20px; font-weight: 800; }
+        .team-gain-label { font-size: 11px; letter-spacing: 0.8px; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; display: flex; justify-content: space-between; }
+        .team-gain-big { font-size: 32px; font-weight: 800; color: #22c55e; margin-bottom: 16px; }
+        .team-gain-big span { font-size: 16px; font-weight: 700; }
+        .team-total-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 13px; color: #cbd5e1; }
+        .team-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding-top: 16px; }
+        .team-stat-item span { display: block; font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
+        .team-stat-item strong { font-size: 18px; font-weight: 800; color: white; }
+
+        .invite-card { background: white; margin: -45px 18px 20px 18px; border-radius: 16px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
+        .invite-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .invite-label { font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 0.8px; }
+        .copy-link-blue { color: #2563eb; font-size: 13px; font-weight: 700; background: none; border: none; cursor: pointer; }
+        .invite-code-big { font-size: 24px; font-weight: 900; letter-spacing: 3px; color: #0f172a; margin-bottom: 6px; }
+        .invite-desc { font-size: 12px; color: #64748b; line-height: 1.4; padding-bottom: 16px; border-bottom: 1px dashed #e2e8f0; margin-bottom: 16px; }
+        .link-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .link-text { font-size: 12px; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 85%; font-family: monospace; }
+        .invite-btns-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .outline-btn { background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; font-size: 13px; font-weight: 700; color: #0f172a; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; }
+
+        /* Liste des membres de l'équipe */
+        .member-list-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; margin-top: 12px; }
+        .member-row { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; }
+        .member-row:last-child { border-bottom: none; }
+        .member-phone { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 3px; }
+        .member-date { font-size: 11px; color: #94a3b8; }
+        .member-status-no { font-size: 12px; color: #94a3b8; font-weight: 500; }
+        .member-status-yes { font-size: 13px; color: #16a34a; font-weight: 800; }
+
+        /* Page Profil Style Capture */
+        .prof-header-wrap { background: white; padding: 20px 18px; border-bottom: 1px solid #f1f5f9; }
+        .prof-top-title { font-size: 20px; font-weight: 800; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .prof-balance-box { background: #0f172a; color: white; border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+        .prof-bal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+        .prof-bal-item { background: rgba(255,255,255,0.08); padding: 12px; border-radius: 12px; }
+        .prof-bal-item span { display: block; font-size: 10px; color: #94a3b8; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .prof-bal-item strong { font-size: 17px; font-weight: 800; }
+        .prof-action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-dep { background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; }
+        .btn-wit { background: #1e293b; color: #ffffff; border: none; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; }
+
+        .promo-red-banner { background: linear-gradient(90deg, #b91c1c, #dc2626); color: white; margin: 16px 18px 8px 18px; padding: 14px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .service-group-title { font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 1px; padding: 14px 18px 6px 18px; text-transform: uppercase; }
+        .service-card { background: white; margin: 0 18px 12px 18px; border-radius: 14px; border: 1px solid #e2e8f0; overflow: hidden; }
+        .service-row { padding: 15px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
+        .service-row:last-child { border-bottom: none; }
+        .service-left { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; color: #0f172a; }
+        .service-icon-box { width: 32px; height: 32px; border-radius: 8px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #475569; }
+        .service-right { font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 6px; }
+
+        /* Barre de navigation inférieure fixe avec icônes SVG */
         nav { 
             position: fixed; 
             bottom: 0; 
@@ -55,9 +126,9 @@
             border-top: 1px solid #e2e8f0; 
             display: flex; 
             justify-content: space-around; 
-            padding: 12px 0; 
+            padding: 8px 0 10px 0; 
             z-index: 9999; 
-            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.04);
         }
         .nav-item { 
             background: none; 
@@ -66,40 +137,53 @@
             flex-direction: column; 
             align-items: center; 
             gap: 4px; 
-            color: #94a3b8; 
+            color: #64748b; 
             font-size: 11px; 
             cursor: pointer; 
             font-weight: 600; 
-            padding: 4px 12px; 
+            padding: 4px 14px;
+            position: relative;
         }
-        .nav-item.active { color: #ef4444; }
+        .nav-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+        .nav-item.active { color: #0f172a; font-weight: 800; }
+        .nav-item.active::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            width: 24px;
+            height: 3px;
+            background: #dc2626;
+            border-radius: 0 0 3px 3px;
+        }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.65); justify-content: center; align-items: flex-end; z-index: 1000; }
-        .modal-card { background: white; width: 100%; max-width: 480px; padding: 26px 20px; border-radius: 24px 24px 0 0; position: relative; max-height: 90vh; overflow-y: auto; }
-        .close-modal { position: absolute; top: 18px; right: 18px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; color: #475569; display: flex; align-items: center; justify-content: center; }
-        .tab-switch { display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; margin-bottom: 20px; }
-        .tab-opt { flex: 1; padding: 10px; border: none; background: none; font-weight: 700; font-size: 14px; border-radius: 8px; cursor: pointer; color: #64748b; }
+        /* Modales */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.65); justify-content: center; align-items: flex-end; z-index: 10000; }
+        .modal-card { background: white; width: 100%; max-width: 480px; padding: 24px 20px; border-radius: 24px 24px 0 0; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-modal { position: absolute; top: 18px; right: 18px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; color: #475569; }
+        .tab-switch { display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; margin-bottom: 18px; }
+        .tab-opt { flex: 1; padding: 10px; border: none; background: none; font-weight: 700; font-size: 13px; border-radius: 8px; cursor: pointer; color: #64748b; }
         .tab-opt.active { background: white; color: #0f172a; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .input-group { margin-bottom: 16px; }
+        .input-group { margin-bottom: 14px; }
         .input-group label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; }
-        .input-group input, .input-group select { width: 100%; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 12px; font-size: 14px; outline: none; background: white; color: #0f172a; }
-        .submit-form-btn { width: 100%; background: #ef4444; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 8px; }
+        .input-group input, .input-group select { width: 100%; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; background: white; color: #0f172a; }
+        .submit-form-btn { width: 100%; background: #dc2626; color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 8px; }
         #formMessage, #depositMessage, #withdrawMessage { margin-top: 12px; text-align: center; font-size: 13px; font-weight: 700; }
-        .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
-        .amount-option { padding: 12px 6px; border: 1.5px solid #e2e8f0; border-radius: 12px; background: #f8fafc; font-weight: 700; font-size: 11px; color: #0f172a; cursor: pointer; text-align: center; }
-        .amount-option.selected { border-color: #ef4444; background: #fef2f2; color: #ef4444; }
-        .transfer-box { background: #f8fafc; border: 1.5px dashed #94a3b8; border-radius: 14px; padding: 14px; margin-bottom: 16px; }
-        .transfer-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; background: white; padding: 10px 12px; border-radius: 10px; border: 1px solid #e2e8f0; }
-        .transfer-number { font-size: 16px; font-weight: 800; color: #0f172a; }
-        .copy-btn { background: #0f172a; color: white; border: none; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
-        .active-badge { background: #dcfce7; color: #16a34a; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+        .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+        .amount-option { padding: 11px 6px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f8fafc; font-weight: 700; font-size: 12px; color: #0f172a; cursor: pointer; text-align: center; }
+        .amount-option.selected { border-color: #dc2626; background: #fef2f2; color: #dc2626; }
+        .transfer-box { background: #f8fafc; border: 1.5px dashed #94a3b8; border-radius: 12px; padding: 12px; margin-bottom: 14px; }
+        .transfer-row { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; background: white; padding: 10px 12px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .transfer-number { font-size: 15px; font-weight: 800; color: #0f172a; }
+        .copy-btn { background: #0f172a; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
+        <!-- Header global -->
         <header class="app-header">
             <div class="logo-area">
+                <div class="logo-icon">N</div>
                 <div class="logo">Nex<span>Yield</span></div>
                 <button class="admin-btn-quick" onclick="ouvrirAdminSecret()">Admin</button>
             </div>
@@ -107,125 +191,384 @@
                 <button class="pill-btn pill-login" onclick="openAuthModal('login')">Connexion</button>
                 <button class="pill-btn pill-register" onclick="openAuthModal('register')">S'inscrire</button>
             </div>
+            <div class="notif-bell" id="headerBell" style="display:none;" onclick="openHistoryModal()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span class="notif-dot"></span>
+            </div>
         </header>
 
-        <!-- ACCUEIL (Avec la nouvelle grille de packs) -->
+        <!-- 1. ONGLET ACCUEIL -->
         <div id="tab-accueil" class="page-content active">
-            <div class="banner-bonus">
-                <h3>Bonus de Bienvenue</h3>
-                <div class="amount">800 FCFA</div>
-                <p style="font-size: 12px; color: #cbd5e1; margin-top: 5px;">Crédité instantanément à l'inscription</p>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="font-size: 18px;">Opportunités d'investissement</h3>
-                <span style="font-size: 12px; color: #64748b; font-weight: 600;">Solde Dépôt : <strong id="homeDepositBalance" style="color: #0f172a;">0 FCFA</strong></span>
-            </div>
-            
-            <div class="plan-card">
-                <div class="plan-body"><h4 class="plan-title">Pack Starter</h4><p style="font-size: 13px; color: #64748b;">Idéal pour débuter.</p></div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;"><div class="stat-box"><label>Prix</label><span>2 000 FCFA</span></div><div class="stat-box"><label>Gain / jour</label><span class="green">400 FCFA</span></div><div class="stat-box"><label>Rendement</label><span>20%</span></div></div>
-                <div class="plan-footer"><div class="total-earn">Journalier : <strong>20%</strong></div><button class="action-btn" onclick="buyPack('Pack Starter', 2000, 400, 20)">Investir</button></div>
+            <div class="hero-banner">
+                <div class="hero-tag">ÉQUIPE & RENDEMENT</div>
+                <h1>Grandir ensemble<br>avec NexYield</h1>
+                <p>Investissez dans nos lignes de production et gagnez 25% sur chaque premier dépôt de votre équipe.</p>
+                <button class="hero-cta" onclick="switchTab('equipe', document.querySelectorAll('.nav-item')[2])">
+                    En savoir plus
+                    <span class="hero-cta-circle">→</span>
+                </button>
             </div>
 
-            <div class="plan-card">
-                <div class="plan-body"><h4 class="plan-title">Pack Bronze</h4><p style="font-size: 13px; color: #64748b;">Petit investissement.</p></div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;"><div class="stat-box"><label>Prix</label><span>3 000 FCFA</span></div><div class="stat-box"><label>Gain / jour</label><span class="green">750 FCFA</span></div><div class="stat-box"><label>Rendement</label><span>25%</span></div></div>
-                <div class="plan-footer"><div class="total-earn">Journalier : <strong>25%</strong></div><button class="action-btn" onclick="buyPack('Pack Bronze', 3000, 750, 25)">Investir</button></div>
-            </div>
+            <div class="section-wrap">
+                <div class="section-kicker">NOS ACTIVITÉS</div>
+                <div class="section-heading">
+                    <span>Lignes disponibles</span>
+                    <span style="font-size: 12px; font-weight: 600; color: #64748b;">Solde : <strong id="homeDepositBalance" style="color:#0f172a;">0 FCFA</strong></span>
+                </div>
 
-            <div class="plan-card">
-                <div class="plan-body"><h4 class="plan-title">Pack Argent</h4><p style="font-size: 13px; color: #64748b;">Rendement supérieur.</p></div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;"><div class="stat-box"><label>Prix</label><span>5 000 FCFA</span></div><div class="stat-box"><label>Gain / jour</label><span class="green">1 500 FCFA</span></div><div class="stat-box"><label>Rendement</label><span>30%</span></div></div>
-                <div class="plan-footer"><div class="total-earn">Journalier : <strong>30%</strong></div><button class="action-btn" onclick="buyPack('Pack Argent', 5000, 1500, 30)">Investir</button></div>
-            </div>
-
-            <div class="plan-card">
-                <div class="plan-body"><h4 class="plan-title">Pack Or</h4><p style="font-size: 13px; color: #64748b;">Pour investisseurs actifs.</p></div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;"><div class="stat-box"><label>Prix</label><span>10 000 FCFA</span></div><div class="stat-box"><label>Gain / jour</label><span class="green">3 000 FCFA</span></div><div class="stat-box"><label>Rendement</label><span>30%</span></div></div>
-                <div class="plan-footer"><div class="total-earn">Journalier : <strong>30%</strong></div><button class="action-btn" onclick="buyPack('Pack Or', 10000, 3000, 30)">Investir</button></div>
-            </div>
-
-            <div class="plan-card">
-                <div class="plan-body"><h4 class="plan-title">Pack Platine</h4><p style="font-size: 13px; color: #64748b;">Niveau supérieur.</p></div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;"><div class="stat-box"><label>Prix</label><span>25 000 FCFA</span></div><div class="stat-box"><label>Gain / jour</label><span class="green">8 750 FCFA</span></div><div class="stat-box"><label>Rendement</label><span>35%</span></div></div>
-                <div class="plan-footer"><div class="total-earn">Journalier : <strong>35%</strong></div><button class="action-btn" onclick="buyPack('Pack Platine', 25000, 8750, 35)">Investir</button></div>
-            </div>
-
-            <div class="plan-card">
-                <div class="plan-body"><h4 class="plan-title">Pack Diamond</h4><p style="font-size: 13px; color: #64748b;">Haut rendement professionnel.</p></div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;"><div class="stat-box"><label>Prix</label><span>50 000 FCFA</span></div><div class="stat-box"><label>Gain / jour</label><span class="green">20 000 FCFA</span></div><div class="stat-box"><label>Rendement</label><span>40%</span></div></div>
-                <div class="plan-footer"><div class="total-earn">Journalier : <strong>40%</strong></div><button class="action-btn" onclick="buyPack('Pack Diamond', 50000, 20000, 40)">Investir</button></div>
-            </div>
-
-            <div class="plan-card">
-                <div class="plan-body"><h4 class="plan-title">Pack Master</h4><p style="font-size: 13px; color: #64748b;">Pour gros volumes.</p></div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;"><div class="stat-box"><label>Prix</label><span>100 000 FCFA</span></div><div class="stat-box"><label>Gain / jour</label><span class="green">45 000 FCFA</span></div><div class="stat-box"><label>Rendement</label><span>45%</span></div></div>
-                <div class="plan-footer"><div class="total-earn">Journalier : <strong>45%</strong></div><button class="action-btn" onclick="buyPack('Pack Master', 100000, 45000, 45)">Investir</button></div>
-            </div>
-
-            <div class="plan-card">
-                <div class="plan-body"><h4 class="plan-title">Pack VIP Elite</h4><p style="font-size: 13px; color: #64748b;">Performance maximale exclusive.</p></div>
-                <div class="plan-stats" style="margin: 0 16px 14px 16px;"><div class="stat-box"><label>Prix</label><span>1 000 000 FCFA</span></div><div class="stat-box"><label>Gain / jour</label><span class="green">500 000 FCFA</span></div><div class="stat-box"><label>Rendement</label><span>50%</span></div></div>
-                <div class="plan-footer"><div class="total-earn">Journalier : <strong>50%</strong></div><button class="action-btn" onclick="buyPack('Pack VIP Elite', 1000000, 500000, 50)">Investir</button></div>
-            </div>
-        </div>
-
-        <!-- LIGNES -->
-        <div id="tab-lignes" class="page-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="font-size: 18px;">Mes Lignes de production</h3>
-                <span id="totalDailyYieldBadge" class="active-badge">0 FCFA / jour</span>
-            </div>
-            <div id="purchasedPacksContainer">
-                <p style="font-size: 14px; color: #64748b;">Aucun pack actif.</p>
-            </div>
-        </div>
-
-        <!-- ÉQUIPE -->
-        <div id="tab-equipe" class="page-content">
-            <h3 style="margin-bottom: 15px; font-size: 18px;">Parrainage & Équipe</h3>
-            <div class="banner-bonus" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">
-                <h3>Lien d'invitation (25% sur le 1er dépôt)</h3>
-                <p id="refLinkDisplay" style="font-size: 14px; margin: 8px 0; word-break: break-all;">Connectez-vous pour voir votre lien</p>
-                <button style="background: white; color: #1d4ed8; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px;" onclick="copyRefLink(this)">Copier le lien</button>
-            </div>
-        </div>
-
-        <!-- PROFIL -->
-        <div id="tab-profil" class="page-content">
-            <div class="profile-card">
-                <div class="profile-info">
-                    <div class="avatar" id="profileAvatar">U</div>
-                    <div>
-                        <h4 id="profileName" style="font-size: 16px; margin-bottom: 2px;">Utilisateur</h4>
-                        <p id="profilePhone" style="font-size: 13px; opacity: 0.85;">Non connecté</p>
+                <!-- Pack 1 : 2000 FCFA (20%) -->
+                <div class="prod-card">
+                    <div class="prod-img-wrap" style="background-image: url('https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=700&q=80');">
+                        <span class="plan-badge">Plan 1</span>
+                    </div>
+                    <div class="prod-body">
+                        <div class="prod-header-row">
+                            <div class="prod-title">Ligne Starter</div>
+                            <span class="status-pill">20% / jour</span>
+                        </div>
+                        <div class="prod-metrics">
+                            <div class="metric-col"><label>Prix</label><strong>2 000 FCFA</strong></div>
+                            <div class="metric-col"><label>Revenu quotidien</label><strong class="green">400 FCFA</strong></div>
+                            <div class="metric-col"><label>Durée</label><strong>100 jours</strong></div>
+                        </div>
+                        <div class="prod-footer">
+                            <span class="prod-total">Total 40 000 FCFA</span>
+                            <button class="invest-btn" onclick="buyPack('Ligne Starter', 2000, 400, 20)">Investir</button>
+                        </div>
                     </div>
                 </div>
-                <div class="balance-grid">
-                    <div class="balance-box"><span style="font-size: 10px; opacity: 0.85; display: block;">SOLDE DÉPÔT</span><strong id="depositBalanceDisplay" style="font-size: 18px;">0 FCFA</strong></div>
-                    <div class="balance-box"><span style="font-size: 10px; opacity: 0.85; display: block;">SOLDE RETIRABLE</span><strong id="profileBalance" style="font-size: 18px;">0 FCFA</strong></div>
+
+                <!-- Pack 2 : 3000 FCFA (25%) -->
+                <div class="prod-card">
+                    <div class="prod-img-wrap" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=700&q=80');">
+                        <span class="plan-badge">Plan 2</span>
+                    </div>
+                    <div class="prod-body">
+                        <div class="prod-header-row">
+                            <div class="prod-title">Ligne Bronze</div>
+                            <span class="status-pill">25% / jour</span>
+                        </div>
+                        <div class="prod-metrics">
+                            <div class="metric-col"><label>Prix</label><strong>3 000 FCFA</strong></div>
+                            <div class="metric-col"><label>Revenu quotidien</label><strong class="green">750 FCFA</strong></div>
+                            <div class="metric-col"><label>Durée</label><strong>100 jours</strong></div>
+                        </div>
+                        <div class="prod-footer">
+                            <span class="prod-total">Total 75 000 FCFA</span>
+                            <button class="invest-btn" onclick="buyPack('Ligne Bronze', 3000, 750, 25)">Investir</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="profile-actions">
-                <button class="prof-btn" onclick="openDepositModal()">Dépôt</button>
-                <button class="prof-btn" onclick="openWithdrawModal()">Retrait</button>
-            </div>
-            <div class="menu-list">
-                <div class="menu-item-row" onclick="alert('Pointage quotidien réclamé !')">📅 Pointage quotidien <span>›</span></div>
-                <div class="menu-item-row" onclick="openHistoryModal()">📜 Historique <span>›</span></div>
-                <div class="menu-item-row" id="logoutRow" style="color: #ef4444; display: none;" onclick="logoutUser()">🚪 Se déconnecter</div>
+
+                <!-- Pack 3 : 5000 FCFA (30%) -->
+                <div class="prod-card">
+                    <div class="prod-img-wrap" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=700&q=80');">
+                        <span class="plan-badge">Plan 3</span>
+                    </div>
+                    <div class="prod-body">
+                        <div class="prod-header-row">
+                            <div class="prod-title">Ligne Argent</div>
+                            <span class="status-pill">30% / jour</span>
+                        </div>
+                        <div class="prod-metrics">
+                            <div class="metric-col"><label>Prix</label><strong>5 000 FCFA</strong></div>
+                            <div class="metric-col"><label>Revenu quotidien</label><strong class="green">1 500 FCFA</strong></div>
+                            <div class="metric-col"><label>Durée</label><strong>100 jours</strong></div>
+                        </div>
+                        <div class="prod-footer">
+                            <span class="prod-total">Total 150 000 FCFA</span>
+                            <button class="invest-btn" onclick="buyPack('Ligne Argent', 5000, 1500, 30)">Investir</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pack 4 : 10000 FCFA (30%) -->
+                <div class="prod-card">
+                    <div class="prod-img-wrap" style="background-image: url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=700&q=80');">
+                        <span class="plan-badge">Plan 4</span>
+                    </div>
+                    <div class="prod-body">
+                        <div class="prod-header-row">
+                            <div class="prod-title">Ligne Or</div>
+                            <span class="status-pill">30% / jour</span>
+                        </div>
+                        <div class="prod-metrics">
+                            <div class="metric-col"><label>Prix</label><strong>10 000 FCFA</strong></div>
+                            <div class="metric-col"><label>Revenu quotidien</label><strong class="green">3 000 FCFA</strong></div>
+                            <div class="metric-col"><label>Durée</label><strong>100 jours</strong></div>
+                        </div>
+                        <div class="prod-footer">
+                            <span class="prod-total">Total 300 000 FCFA</span>
+                            <button class="invest-btn" onclick="buyPack('Ligne Or', 10000, 3000, 30)">Investir</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pack 5 : 25000 FCFA (35%) -->
+                <div class="prod-card">
+                    <div class="prod-img-wrap" style="background-image: url('https://images.unsplash.com/photo-1565514020179-026b92b84bb6?auto=format&fit=crop&w=700&q=80');">
+                        <span class="plan-badge">Plan 5</span>
+                    </div>
+                    <div class="prod-body">
+                        <div class="prod-header-row">
+                            <div class="prod-title">Ligne Platine</div>
+                            <span class="status-pill">35% / jour</span>
+                        </div>
+                        <div class="prod-metrics">
+                            <div class="metric-col"><label>Prix</label><strong>25 000 FCFA</strong></div>
+                            <div class="metric-col"><label>Revenu quotidien</label><strong class="green">8 750 FCFA</strong></div>
+                            <div class="metric-col"><label>Durée</label><strong>100 jours</strong></div>
+                        </div>
+                        <div class="prod-footer">
+                            <span class="prod-total">Total 875 000 FCFA</span>
+                            <button class="invest-btn" onclick="buyPack('Ligne Platine', 25000, 8750, 35)">Investir</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pack 6 : 50000 FCFA (40%) -->
+                <div class="prod-card">
+                    <div class="prod-img-wrap" style="background-image: url('https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=700&q=80');">
+                        <span class="plan-badge">Plan 6</span>
+                    </div>
+                    <div class="prod-body">
+                        <div class="prod-header-row">
+                            <div class="prod-title">Ligne Test Électronique</div>
+                            <span class="status-pill">40% / jour</span>
+                        </div>
+                        <div class="prod-metrics">
+                            <div class="metric-col"><label>Prix</label><strong>50 000 FCFA</strong></div>
+                            <div class="metric-col"><label>Revenu quotidien</label><strong class="green">20 000 FCFA</strong></div>
+                            <div class="metric-col"><label>Durée</label><strong>100 jours</strong></div>
+                        </div>
+                        <div class="prod-footer">
+                            <span class="prod-total">Total 2 000 000 FCFA</span>
+                            <button class="invest-btn" onclick="buyPack('Ligne Test Électronique', 50000, 20000, 40)">Investir</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pack 7 : 100000 FCFA (45%) -->
+                <div class="prod-card">
+                    <div class="prod-img-wrap" style="background-image: url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=700&q=80');">
+                        <span class="plan-badge">Plan 7</span>
+                    </div>
+                    <div class="prod-body">
+                        <div class="prod-header-row">
+                            <div class="prod-title">Infrastructure Industrielle</div>
+                            <span class="status-pill">45% / jour</span>
+                        </div>
+                        <div class="prod-metrics">
+                            <div class="metric-col"><label>Prix</label><strong>100 000 FCFA</strong></div>
+                            <div class="metric-col"><label>Revenu quotidien</label><strong class="green">45 000 FCFA</strong></div>
+                            <div class="metric-col"><label>Durée</label><strong>100 jours</strong></div>
+                        </div>
+                        <div class="prod-footer">
+                            <span class="prod-total">Total 4 500 000 FCFA</span>
+                            <button class="invest-btn" onclick="buyPack('Infrastructure Industrielle', 100000, 45000, 45)">Investir</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pack 8 : 1000000 FCFA (50%) -->
+                <div class="prod-card">
+                    <div class="prod-img-wrap" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=700&q=80');">
+                        <span class="plan-badge">VIP Elite</span>
+                    </div>
+                    <div class="prod-body">
+                        <div class="prod-header-row">
+                            <div class="prod-title">Centrale Numérique VIP</div>
+                            <span class="status-pill" style="background:#fef2f2; color:#dc2626;">50% / jour</span>
+                        </div>
+                        <div class="prod-metrics">
+                            <div class="metric-col"><label>Prix</label><strong>1 000 000 FCFA</strong></div>
+                            <div class="metric-col"><label>Revenu quotidien</label><strong class="green">500 000 FCFA</strong></div>
+                            <div class="metric-col"><label>Durée</label><strong>100 jours</strong></div>
+                        </div>
+                        <div class="prod-footer">
+                            <span class="prod-total">Total 50 000 000 FCFA</span>
+                            <button class="invest-btn" style="background:#dc2626;" onclick="buyPack('Centrale Numérique VIP', 1000000, 500000, 50)">Investir</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Navigation fixe sécurisée -->
+        <!-- 2. ONGLET LIGNES DE PRODUCTION -->
+        <div id="tab-lignes" class="page-content">
+            <div style="background:white; padding:18px 18px 8px 18px;">
+                <h2 style="font-size:22px; font-weight:800;">Lignes de production</h2>
+            </div>
+            <div class="sub-tabs">
+                <button class="sub-tab active">Mes lignes actives</button>
+                <button class="sub-tab" onclick="switchTab('accueil', document.querySelectorAll('.nav-item')[0])">Infrastructures disponibles</button>
+            </div>
+            <div class="section-wrap">
+                <div style="background:#0f172a; color:white; padding:16px; border-radius:14px; display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+                    <span style="font-size:13px; color:#94a3b8;">Revenu quotidien total</span>
+                    <strong id="totalDailyYieldBadge" style="font-size:18px; color:#22c55e;">0 FCFA / jour</strong>
+                </div>
+                <div id="purchasedPacksContainer">
+                    <p style="font-size:14px; color:#64748b; text-align:center; padding:30px 0;">Aucune ligne de production active pour le moment.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. ONGLET ÉQUIPE (Style exact de la capture) -->
+        <div id="tab-equipe" class="page-content">
+            <div class="team-hero">
+                <div class="team-hero-top">
+                    <h2>Mon équipe</h2>
+                    <span style="font-size:12px; color:#94a3b8;">Commission 25%</span>
+                </div>
+                <div class="team-gain-label">
+                    <span>GAINS DE L'ÉQUIPE</span>
+                    <span>Direct 25%</span>
+                </div>
+                <div class="team-gain-big"><span id="teamEarningsDisplay" style="font-size:32px;">0</span> <span>FCFA</span></div>
+                <div class="team-total-row">
+                    <span>Total gagné : <strong id="teamTotalDisplay" style="color:white;">0 FCFA</strong></span>
+                    <span onclick="openHistoryModal()" style="cursor:pointer; font-weight:600;">Détails ›</span>
+                </div>
+                <div class="team-stats-grid">
+                    <div class="team-stat-item"><span>Membres directs</span><strong id="directMembersCount">0</strong></div>
+                    <div class="team-stat-item"><span>Total membres</span><strong id="totalMembersCount">0</strong></div>
+                    <div class="team-stat-item"><span>Actifs</span><strong id="activeMembersCount">0</strong></div>
+                </div>
+            </div>
+
+            <div class="invite-card">
+                <div class="invite-header">
+                    <span class="invite-label">CODE D'INVITATION</span>
+                    <button class="copy-link-blue" onclick="copyInviteCode(this)">Copier</button>
+                </div>
+                <div class="invite-code-big" id="inviteCodeText">------</div>
+                <p class="invite-desc">Les amis qui s'inscrivent avec votre lien rejoignent votre équipe et vous rapportent 25% sur leur premier dépôt.</p>
+                
+                <div class="link-box">
+                    <span class="link-text" id="refLinkDisplay">Connectez-vous pour voir votre lien</span>
+                    <button onclick="copyRefLink(this)" style="background:none; border:none; cursor:pointer; color:#0f172a;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
+                </div>
+
+                <div class="invite-btns-row">
+                    <button class="outline-btn" onclick="copyRefLink(this)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                        Partager
+                    </button>
+                    <button class="outline-btn" onclick="alert('Partagez votre lien directement sur WhatsApp !')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        Code QR
+                    </button>
+                </div>
+            </div>
+
+            <div class="section-wrap" style="padding-top: 0;">
+                <div class="section-kicker">MEMBRES INSCRITS</div>
+                <div class="section-heading" style="margin-bottom:8px;">Mon équipe directe</div>
+                <div class="member-list-card" id="teamMembersList">
+                    <div style="padding:20px; text-align:center; font-size:13px; color:#64748b;">Aucun membre dans votre équipe pour le moment.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. ONGLET PROFIL (Style exact de la capture) -->
+        <div id="tab-profil" class="page-content">
+            <div class="prof-header-wrap">
+                <div class="prof-top-title">
+                    <span>Profil</span>
+                    <span id="profilePhone" style="font-size:13px; font-weight:600; color:#64748b;">Non connecté</span>
+                </div>
+                <div class="prof-balance-box">
+                    <div style="font-size:12px; color:#94a3b8;">Portefeuille NexYield</div>
+                    <div class="prof-bal-grid">
+                        <div class="prof-bal-item">
+                            <span>SOLDE DÉPÔT</span>
+                            <strong id="depositBalanceDisplay">0 FCFA</strong>
+                        </div>
+                        <div class="prof-bal-item">
+                            <span>SOLDE RETIRABLE</span>
+                            <strong id="profileBalance" style="color:#22c55e;">0 FCFA</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="prof-action-row">
+                    <button class="btn-dep" onclick="openDepositModal()">Dépôt</button>
+                    <button class="btn-wit" onclick="openWithdrawModal()">Retrait</button>
+                </div>
+            </div>
+
+            <div class="promo-red-banner" onclick="alert('Bonus quotidien : +50 FCFA crédités !')">
+                <span>Tournez pour gagner des prix</span>
+                <span>50 FCFA ›</span>
+            </div>
+
+            <div class="service-group-title">SERVICES</div>
+            <div class="service-card">
+                <div class="service-row" onclick="openHistoryModal()">
+                    <div class="service-left">
+                        <div class="service-icon-box">📜</div>
+                        <span>Historique des transactions</span>
+                    </div>
+                    <div class="service-right">›</div>
+                </div>
+                <div class="service-row" onclick="alert('NexYield : Investissez dans des lignes industrielles et percevez des rendements quotidiens.')">
+                    <div class="service-left">
+                        <div class="service-icon-box">💡</div>
+                        <span>Comment ça marche</span>
+                    </div>
+                    <div class="service-right">›</div>
+                </div>
+                <div class="service-row" onclick="alert('Votre compte est protégé par chiffrement serveur.')">
+                    <div class="service-left">
+                        <div class="service-icon-box">🛡️</div>
+                        <span>Sécurité du compte</span>
+                    </div>
+                    <div class="service-right">›</div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-row">
+                    <div class="service-left">
+                        <div class="service-icon-box">🌐</div>
+                        <span>Langue</span>
+                    </div>
+                    <div class="service-right">Français ›</div>
+                </div>
+            </div>
+
+            <div class="service-card" id="logoutRow" style="display: none;">
+                <div class="service-row" onclick="logoutUser()">
+                    <div class="service-left" style="color:#dc2626;">
+                        <div class="service-icon-box" style="background:#fef2f2; color:#dc2626;">🚪</div>
+                        <span>Se déconnecter</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Barre de navigation inférieure fixe avec icônes SVG -->
         <nav>
-            <button class="nav-item active" onclick="switchTab('accueil', this)">Accueil</button>
-            <button class="nav-item" onclick="switchTab('lignes', this)">Lignes</button>
-            <button class="nav-item" onclick="switchTab('equipe', this)">Équipe</button>
-            <button class="nav-item" onclick="switchTab('profil', this)">Profil</button>
+            <button class="nav-item active" onclick="switchTab('accueil', this)">
+                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>Accueil</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('lignes', this)">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <span>Lignes</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('equipe', this)">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Équipe</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('profil', this)">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Profil</span>
+            </button>
         </nav>
 
-        <!-- Modale Auth -->
+        <!-- MODALES (Auth, Dépôt, Retrait, Admin, Historique) -->
         <div id="authModal" class="modal">
             <div class="modal-card">
                 <button class="close-modal" onclick="closeAuthModal()">✕</button>
@@ -242,7 +585,6 @@
             </div>
         </div>
 
-        <!-- Modale Dépôt (Mis à jour avec tous les montants demandés) -->
         <div id="depositModal" class="modal">
             <div class="modal-card">
                 <button class="close-modal" onclick="closeDepositModal()">✕</button>
@@ -272,7 +614,6 @@
             </div>
         </div>
 
-        <!-- Modale Retrait -->
         <div id="withdrawModal" class="modal">
             <div class="modal-card">
                 <button class="close-modal" onclick="closeWithdrawModal()">✕</button>
@@ -280,7 +621,7 @@
                 <form onsubmit="handleWithdraw(event)">
                     <div class="input-group"><label>Montant (FCFA)</label><input type="number" id="withdrawAmount" min="1200" oninput="calculateWithdrawFee()" required></div>
                     <div style="background: #f8fafc; padding: 12px; border-radius: 10px; margin-bottom: 15px; font-size: 13px;">
-                        <div>Frais (10%) : <strong id="feeText" style="color: #ef4444;">0 FCFA</strong></div>
+                        <div>Frais (10%) : <strong id="feeText" style="color: #dc2626;">0 FCFA</strong></div>
                         <div>Net reçu : <strong id="netText" style="color: #16a34a;">0 FCFA</strong></div>
                     </div>
                     <div class="input-group"><label>Numéro de réception</label><input type="tel" id="withdrawPhone" required></div>
@@ -290,7 +631,6 @@
             </div>
         </div>
 
-        <!-- Modale Admin -->
         <div id="adminModal" class="modal">
             <div class="modal-card">
                 <button class="close-modal" onclick="document.getElementById('adminModal').style.display='none'">✕</button>
@@ -300,13 +640,12 @@
                     <button class="tab-opt" id="adminTabWit" onclick="switchAdminTab('withdrawals')">Retraits</button>
                 </div>
                 <div style="margin-bottom: 12px;">
-                    <button onclick="triggerDailyYield()" style="width:100%; background:#2563eb; color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">⚡ Simuler les gains de 24h (Packs Actifs)</button>
+                    <button onclick="triggerDailyYield()" style="width:100%; background:#0f172a; color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">⚡ Simuler les gains de 24h (Packs Actifs)</button>
                 </div>
                 <div id="adminListContent" style="display: flex; flex-direction: column; gap: 10px; max-height: 50vh; overflow-y: auto;"></div>
             </div>
         </div>
 
-        <!-- Modale Historique -->
         <div id="historyModal" class="modal">
             <div class="modal-card">
                 <button class="close-modal" onclick="document.getElementById('historyModal').style.display='none'">✕</button>
@@ -417,27 +756,49 @@
             const packs = getPurchasedPacks();
             if (!currentUser || packs.length === 0) {
                 badge.innerText = '0 FCFA / jour';
-                container.innerHTML = '<p style="font-size: 14px; color: #64748b;">Aucun pack actif.</p>';
+                container.innerHTML = '<p style="font-size:14px; color:#64748b; text-align:center; padding:30px 0;">Aucune ligne de production active pour le moment.</p>';
                 return;
             }
             const totalDaily = packs.reduce((sum, p) => sum + p.dailyGain, 0);
             badge.innerText = `+${totalDaily.toLocaleString('fr-FR')} FCFA / jour`;
             container.innerHTML = packs.map(p => `
-                <div class="plan-card">
-                    <div class="plan-body" style="display:flex; justify-content:space-between; align-items:center;">
-                        <div><h4 class="plan-title" style="margin-bottom:2px;">${p.name}</h4><span style="font-size:12px; color:#64748b;">Le ${p.date}</span></div>
-                        <span class="active-badge">En production</span>
+                <div class="prod-card">
+                    <div class="prod-body">
+                        <div class="prod-header-row">
+                            <div class="prod-title">${p.name}</div>
+                            <span class="status-pill" style="background:#dcfce7; color:#16a34a;">En production</span>
+                        </div>
+                        <div class="prod-metrics">
+                            <div class="metric-col"><label>Investi</label><strong>${p.price.toLocaleString()} FCFA</strong></div>
+                            <div class="metric-col"><label>Gain / jour</label><strong class="green">+${p.dailyGain.toLocaleString()} FCFA</strong></div>
+                            <div class="metric-col"><label>Activé le</label><strong>${p.date}</strong></div>
+                        </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function maskPhone(phone) {
+            if (!phone || phone.length < 8) return phone;
+            return phone.slice(0, 6) + '****' + phone.slice(-4);
+        }
+
+        function copyInviteCode(btn) {
+            if (!currentUser) return;
+            const code = currentUser.slice(-6).toUpperCase();
+            navigator.clipboard.writeText(code).then(() => {
+                btn.innerText = 'Copié !';
+                setTimeout(() => btn.innerText = 'Copier', 2000);
+            });
         }
 
         function copyRefLink(btnElement) {
             if (!currentUser) { alert("Connectez-vous."); openAuthModal('login'); return; }
             const link = PRODUCTION_URL + '/?ref=' + encodeURIComponent(currentUser);
             navigator.clipboard.writeText(link).then(() => {
+                const orig = btnElement.innerHTML;
                 btnElement.innerText = 'Lien copié !';
-                setTimeout(() => btnElement.innerText = 'Copier le lien', 2000);
+                setTimeout(() => btnElement.innerHTML = orig, 2000);
             });
         }
 
@@ -485,7 +846,7 @@
                 });
                 msg.style.color = '#16a34a'; msg.innerText = "Dépôt enregistré ! En attente de validation.";
                 setTimeout(() => { closeDepositModal(); msg.innerText = ''; }, 1500);
-            } catch(err) { msg.style.color = '#ef4444'; msg.innerText = "Erreur réseau."; }
+            } catch(err) { msg.style.color = '#dc2626'; msg.innerText = "Erreur réseau."; }
         }
 
         function calculateWithdrawFee() {
@@ -516,8 +877,8 @@
                     msg.style.color = '#16a34a'; msg.innerText = '✅ Retrait pris en compte !';
                     refreshBalance();
                     setTimeout(() => { closeWithdrawModal(); msg.innerText = ''; }, 1500);
-                } else { msg.style.color = '#ef4444'; msg.innerText = data.error; }
-            } catch(err) { msg.style.color = '#ef4444'; msg.innerText = 'Erreur réseau.'; }
+                } else { msg.style.color = '#dc2626'; msg.innerText = data.error; }
+            } catch(err) { msg.style.color = '#dc2626'; msg.innerText = 'Erreur réseau.'; }
         }
 
         async function refreshBalance() {
@@ -530,6 +891,33 @@
                     currentBalance = data.withdrawableBalance;
                     localStorage.setItem(getUserStorageKey('packs'), JSON.stringify(data.packs || []));
                     saveLocalBalances();
+
+                    // Mise à jour de l'onglet Équipe
+                    const earn = data.referralEarnings || 0;
+                    document.getElementById('teamEarningsDisplay').innerText = earn.toLocaleString('fr-FR');
+                    document.getElementById('teamTotalDisplay').innerText = earn.toLocaleString('fr-FR') + ' FCFA';
+
+                    const refs = data.referrals || [];
+                    document.getElementById('directMembersCount').innerText = refs.length;
+                    document.getElementById('totalMembersCount').innerText = refs.length;
+                    document.getElementById('activeMembersCount').innerText = refs.filter(r => r.invested).length;
+
+                    const listEl = document.getElementById('teamMembersList');
+                    if (refs.length === 0) {
+                        listEl.innerHTML = '<div style="padding:20px; text-align:center; font-size:13px; color:#64748b;">Aucun membre dans votre équipe pour le moment.</div>';
+                    } else {
+                        listEl.innerHTML = refs.map(r => `
+                            <div class="member-row">
+                                <div>
+                                    <div class="member-phone">${maskPhone(r.phone)}</div>
+                                    <div class="member-date">Inscrit le ${r.joinedAt}</div>
+                                </div>
+                                <div>
+                                    ${r.invested ? '<span class="member-status-yes">Investi ✓</span>' : '<span class="member-status-no">N\'a pas investi</span>'}
+                                </div>
+                            </div>
+                        `).join('');
+                    }
                 }
             } catch(err) {}
         }
@@ -586,7 +974,7 @@
                         ${d.status === 'EN ATTENTE' ? `
                             <div style="display:flex; gap:8px; margin-top:5px;">
                                 <button onclick="verifyDeposit(${d.id}, 'APPROVE')" style="flex:1; background:#16a34a; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">Valider</button>
-                                <button onclick="verifyDeposit(${d.id}, 'REJECT')" style="flex:1; background:#ef4444; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">Rejeter</button>
+                                <button onclick="verifyDeposit(${d.id}, 'REJECT')" style="flex:1; background:#dc2626; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">Rejeter</button>
                             </div>
                         ` : ''}
                     </div>
@@ -600,7 +988,7 @@
                         ${w.status === 'EN COURS DE TRAITEMENT' ? `
                             <div style="display:flex; gap:8px; margin-top:5px;">
                                 <button onclick="verifyWithdrawal(${w.id}, 'PAY')" style="flex:1; background:#16a34a; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">Payer</button>
-                                <button onclick="verifyWithdrawal(${w.id}, 'CANCEL')" style="flex:1; background:#ef4444; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">Annuler</button>
+                                <button onclick="verifyWithdrawal(${w.id}, 'CANCEL')" style="flex:1; background:#dc2626; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">Annuler</button>
                             </div>
                         ` : ''}
                     </div>
@@ -635,7 +1023,7 @@
             });
             const data = await res.json();
             const msg = document.getElementById('formMessage');
-            msg.style.color = data.success ? '#16a34a' : '#ef4444';
+            msg.style.color = data.success ? '#16a34a' : '#dc2626';
             msg.innerText = data.message || data.error;
 
             if(data.success) {
@@ -645,9 +1033,10 @@
                     currentBalance = data.withdrawableBalance || 800;
                     saveLocalBalances();
                     document.getElementById('headerAuthBtns').style.display = 'none';
+                    document.getElementById('headerBell').style.display = 'block';
                     document.getElementById('profilePhone').innerText = phone;
-                    document.getElementById('profileAvatar').innerText = phone.slice(-2);
-                    document.getElementById('logoutRow').style.display = 'flex';
+                    document.getElementById('inviteCodeText').innerText = phone.slice(-6).toUpperCase();
+                    document.getElementById('logoutRow').style.display = 'block';
                     document.getElementById('refLinkDisplay').innerText = PRODUCTION_URL + '/?ref=' + encodeURIComponent(phone);
                     document.getElementById('authModal').style.display = 'none';
                     refreshBalance();
@@ -658,9 +1047,10 @@
         function logoutUser() {
             currentUser = null;
             document.getElementById('headerAuthBtns').style.display = 'flex';
+            document.getElementById('headerBell').style.display = 'none';
             document.getElementById('profilePhone').innerText = 'Non connecté';
             document.getElementById('logoutRow').style.display = 'none';
-            switchTab('accueil', document.querySelector('.nav-item'));
+            switchTab('accueil', document.querySelectorAll('.nav-item')[0]);
         }
     </script>
 </body>
