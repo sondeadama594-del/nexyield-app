@@ -14,10 +14,10 @@
         .logo-icon { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #dc2626; display: flex; align-items: center; justify-content: center; color: #dc2626; font-weight: 900; font-size: 14px; }
         .logo { font-size: 20px; font-weight: 800; color: #dc2626; letter-spacing: -0.5px; }
         .logo span { color: #0f172a; }
+        .header-actions { display: flex; align-items: center; gap: 8px; }
         .admin-btn-quick { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; }
-        .notif-bell { position: relative; cursor: pointer; padding: 4px; color: #0f172a; }
-        .notif-dot { position: absolute; top: 3px; right: 4px; width: 7px; height: 7px; background: #dc2626; border-radius: 50%; }
-
+        .download-btn-header { background: #dc2626; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        
         .page-content { flex: 1; display: none; }
         .page-content.active { display: block; }
 
@@ -237,11 +237,10 @@
             <div class="logo-area">
                 <div class="logo-icon">N</div>
                 <div class="logo">Nex<span>Yield</span></div>
-                <button class="admin-btn-quick" onclick="ouvrirAdminSecret()">Admin</button>
             </div>
-            <div class="notif-bell" onclick="openHistoryModal()">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                <span class="notif-dot"></span>
+            <div class="header-actions">
+                <button class="download-btn-header" onclick="openDownloadModal()">📥 App</button>
+                <button class="admin-btn-quick" onclick="ouvrirAdminSecret()">Admin</button>
             </div>
         </header>
 
@@ -261,7 +260,7 @@
                 <div class="section-kicker">NOS ACTIVITÉS</div>
                 <div class="section-heading">
                     <span>Lignes disponibles</span>
-                    <span style="font-size: 12px; font-weight: 600; color: #64748b;">Solde : <strong id="homeDepositBalance" style="color:#0f172a;">0 FCFA</strong></span>
+                    <span style="font-size: 12px; font-weight: 600; color: #64748b;">Solde Dépôt : <strong id="homeDepositBalance" style="color:#0f172a;">0 FCFA</strong></span>
                 </div>
 
                 <div class="prod-card">
@@ -385,6 +384,7 @@
                 </div>
             </div>
         </div>
+
         <!-- 2. ONGLET LIGNES DE PRODUCTION -->
         <div id="tab-lignes" class="page-content">
             <div style="background:white; padding:18px 18px 8px 18px;"><h2 style="font-size:22px; font-weight:800;">Lignes de production</h2></div>
@@ -467,13 +467,14 @@
                 </div>
             </div>
 
-            <div class="promo-red-banner" onclick="alert('Bonus quotidien : +50 FCFA crédités !')">
+            <div class="promo-red-banner" onclick="spinWheel()">
                 <span>Tournez pour gagner des prix</span>
                 <span>50 FCFA ›</span>
             </div>
 
             <div class="service-group-title">SERVICES</div>
             <div class="service-card">
+                <div class="service-row" onclick="openDownloadModal()"><div class="service-left"><div class="service-icon-box">📥</div><span>Télécharger l'application APK</span></div><div class="service-right">›</div></div>
                 <div class="service-row" onclick="openHistoryModal()"><div class="service-left"><div class="service-icon-box">📜</div><span>Historique des transactions</span></div><div class="service-right">›</div></div>
                 <div class="service-row" onclick="alert('NexYield : Investissez dans des lignes industrielles et percevez des rendements quotidiens.')"><div class="service-left"><div class="service-icon-box">💡</div><span>Comment ça marche</span></div><div class="service-right">›</div></div>
                 <div class="service-row" onclick="alert('Votre compte est protégé par chiffrement serveur.')"><div class="service-left"><div class="service-icon-box">🛡️</div><span>Sécurité du compte</span></div><div class="service-right">›</div></div>
@@ -487,7 +488,6 @@
                 <div class="service-row" onclick="logoutUser()"><div class="service-left" style="color:#dc2626;"><div class="service-icon-box" style="background:#fef2f2; color:#dc2626;">🚪</div><span>Se déconnecter</span></div></div>
             </div>
         </div>
-
         <!-- Navigation -->
         <nav id="mainNav" style="display:none;">
             <button class="nav-item active" onclick="switchTab('accueil', this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span>Accueil</span></button>
@@ -497,6 +497,20 @@
         </nav>
 
         <!-- Modales -->
+        <div id="downloadModal" class="modal">
+            <div class="modal-card">
+                <button class="close-modal" onclick="closeDownloadModal()">✕</button>
+                <h3 style="margin-bottom: 12px; font-size: 18px;">Télécharger l'application NexYield</h3>
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 16px; line-height: 1.4;">Installez l'application officielle Android pour un accès direct et rapide depuis votre écran d'accueil.</p>
+                <div style="background: #f8fafc; padding: 16px; border-radius: 12px; text-align: center; border: 1px dashed #cbd5e1; margin-bottom: 16px;">
+                    <div style="font-size: 28px; margin-bottom: 8px;">📱</div>
+                    <div style="font-weight: 800; font-size: 15px; margin-bottom: 4px;">NexYield APK v1.0</div>
+                    <div style="font-size: 12px; color: #64748b;">Taille : 12.4 Mo • Android 7.0+</div>
+                </div>
+                <button onclick="downloadAppFile()" class="submit-form-btn" style="background: #0f172a;">Télécharger le fichier APK</button>
+            </div>
+        </div>
+
         <div id="depositModal" class="modal">
             <div class="modal-card">
                 <button class="close-modal" onclick="closeDepositModal()">✕</button>
@@ -591,7 +605,6 @@
                 document.getElementById('authInviteCode').value = refCode.trim();
             }
 
-            // Pré-remplissage si "Se souvenir de moi" était actif
             const savedPhone = localStorage.getItem('nexyield_saved_phone');
             const savedPrefix = localStorage.getItem('nexyield_saved_prefix');
             const savedPassword = localStorage.getItem('nexyield_saved_password');
@@ -603,7 +616,6 @@
                 document.getElementById('rememberMeCheckbox').checked = true;
             }
 
-            // Restaure la session automatiquement si l'utilisateur était déjà connecté
             const savedUser = localStorage.getItem('nexyield_active_user');
             if (savedUser) {
                 currentUser = savedUser;
@@ -617,9 +629,6 @@
                 document.getElementById('inviteCodeText').innerText = generatedCode;
                 document.getElementById('refLinkDisplay').innerText = PRODUCTION_URL + '/?ref=' + encodeURIComponent(currentUser);
                 
-                depositBalance = parseFloat(localStorage.getItem(getUserStorageKey('depositBalance')) || '0');
-                currentBalance = parseFloat(localStorage.getItem(getUserStorageKey('withdrawableBalance')) || '800');
-                syncUserBalancesToUI();
                 refreshBalance();
             }
         });
@@ -711,7 +720,6 @@
 
                         depositBalance = data.depositBalance || 0;
                         currentBalance = data.withdrawableBalance || 800;
-                        saveLocalBalances();
 
                         document.getElementById('authScreen').style.display = 'none';
                         document.getElementById('mainHeader').style.display = 'flex';
@@ -750,25 +758,10 @@
             }
         }
 
-        function getUserStorageKey(suffix) { return `nexyield_${currentUser}_${suffix}`; }
-
         function syncUserBalancesToUI() {
-            if (!currentUser) return;
             document.getElementById('depositBalanceDisplay').innerText = depositBalance.toLocaleString('fr-FR') + ' FCFA';
             document.getElementById('homeDepositBalance').innerText = depositBalance.toLocaleString('fr-FR') + ' FCFA';
             document.getElementById('profileBalance').innerText = currentBalance.toLocaleString('fr-FR') + ' FCFA';
-        }
-
-        function saveLocalBalances() {
-            if (!currentUser) return;
-            localStorage.setItem(getUserStorageKey('depositBalance'), depositBalance);
-            localStorage.setItem(getUserStorageKey('withdrawableBalance'), currentBalance);
-            syncUserBalancesToUI();
-        }
-
-        function getPurchasedPacks() {
-            if (!currentUser) return [];
-            return JSON.parse(localStorage.getItem(getUserStorageKey('packs')) || '[]');
         }
 
         async function buyPack(name, price, dailyGain, percent) {
@@ -785,10 +778,8 @@
                 const data = await res.json();
                 if (data.success) {
                     depositBalance = data.depositBalance;
-                    saveLocalBalances();
-                    localStorage.setItem(getUserStorageKey('packs'), JSON.stringify(data.packs));
+                    syncUserBalancesToUI();
                     alert(`${name} activé avec succès !`);
-                    renderPurchasedPacks();
                     refreshBalance();
                 } else {
                     alert(data.error);
@@ -796,18 +787,43 @@
             } catch (err) { alert("Erreur réseau."); }
         }
 
-        function renderPurchasedPacks() {
+        async function spinWheel() {
+            if (!currentUser) return;
+            try {
+                const res = await fetch('/api/spin-wheel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userPhone: currentUser })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    currentBalance = data.withdrawableBalance;
+                    syncUserBalancesToUI();
+                    alert("🎉 Félicitations ! Vous avez gagné 50 FCFA ajoutés à votre solde retirable.");
+                } else {
+                    alert(data.error);
+                }
+            } catch(e) { alert("Erreur réseau."); }
+        }
+
+        function openDownloadModal() { document.getElementById('downloadModal').style.display = 'flex'; }
+        function closeDownloadModal() { document.getElementById('downloadModal').style.display = 'none'; }
+        function downloadAppFile() {
+            alert("Téléchargement de l'application NexYield APK en cours...");
+            closeDownloadModal();
+        }
+
+        function renderPurchasedPacks(packsList = []) {
             const container = document.getElementById('purchasedPacksContainer');
             const badge = document.getElementById('totalDailyYieldBadge');
-            const packs = getPurchasedPacks();
-            if (!currentUser || packs.length === 0) {
+            if (!packsList || packsList.length === 0) {
                 badge.innerText = '0 FCFA / jour';
                 container.innerHTML = '<p style="font-size:14px; color:#64748b; text-align:center; padding:30px 0;">Aucune ligne de production active pour le moment.</p>';
                 return;
             }
-            const totalDaily = packs.reduce((sum, p) => sum + p.dailyGain, 0);
+            const totalDaily = packsList.reduce((sum, p) => sum + p.dailyGain, 0);
             badge.innerText = `+${totalDaily.toLocaleString('fr-FR')} FCFA / jour`;
-            container.innerHTML = packs.map(p => `
+            container.innerHTML = packsList.map(p => `
                 <div class="prod-card">
                     <div class="prod-body">
                         <div class="prod-header-row"><div class="prod-title">${p.name}</div><span class="status-pill" style="background:#dcfce7; color:#16a34a;">En production</span></div>
@@ -930,8 +946,8 @@
                 if(data.success) {
                     depositBalance = data.depositBalance;
                     currentBalance = data.withdrawableBalance;
-                    localStorage.setItem(getUserStorageKey('packs'), JSON.stringify(data.packs || []));
-                    saveLocalBalances();
+                    syncUserBalancesToUI();
+                    window._currentPacks = data.packs || [];
 
                     const earn = data.referralEarnings || 0;
                     document.getElementById('teamEarningsDisplay').innerText = earn.toLocaleString('fr-FR');
@@ -982,10 +998,10 @@
                 const data = await res.json();
                 if(historyCurrentTab === 'deposits') {
                     if(data.deposits.length === 0) { listDiv.innerHTML = '<p style="color:#64748b; font-size:13px;">Aucun dépôt.</p>'; return; }
-                    listDiv.innerHTML = data.deposits.map(d => `<div style="border:1px solid #e2e8f0; padding:10px; border-radius:8px; font-size:13px;"><b>Dépôt ${d.amount.toLocaleString()} FCFA</b> - ${d.status}</div>`).join('');
+                    listDiv.innerHTML = data.deposits.map(d => `<div style="border:1px solid #e2e8f0; padding:10px; border-radius:8px; font-size:13px;"><b>Dépôt ${d.amount.toLocaleString()} FCFA</b> - Statut : <b>${d.status}</b> (${d.date})</div>`).join('');
                 } else {
                     if(data.withdrawals.length === 0) { listDiv.innerHTML = '<p style="color:#64748b; font-size:13px;">Aucun retrait.</p>'; return; }
-                    listDiv.innerHTML = data.withdrawals.map(w => `<div style="border:1px solid #e2e8f0; padding:10px; border-radius:8px; font-size:13px;"><b>Retrait ${w.requestedAmount.toLocaleString()} FCFA</b> - ${w.status}</div>`).join('');
+                    listDiv.innerHTML = data.withdrawals.map(w => `<div style="border:1px solid #e2e8f0; padding:10px; border-radius:8px; font-size:13px;"><b>Retrait ${w.requestedAmount.toLocaleString()} FCFA</b> - Statut : <b>${w.status}</b> (${w.date})</div>`).join('');
                 }
             } catch(e) { listDiv.innerHTML = 'Erreur.'; }
         }
