@@ -384,7 +384,6 @@
                 </div>
             </div>
         </div>
-
         <!-- 2. ONGLET LIGNES DE PRODUCTION -->
         <div id="tab-lignes" class="page-content">
             <div style="background:white; padding:18px 18px 8px 18px;"><h2 style="font-size:22px; font-weight:800;">Lignes de production</h2></div>
@@ -488,6 +487,7 @@
                 <div class="service-row" onclick="logoutUser()"><div class="service-left" style="color:#dc2626;"><div class="service-icon-box" style="background:#fef2f2; color:#dc2626;">🚪</div><span>Se déconnecter</span></div></div>
             </div>
         </div>
+
         <!-- Navigation -->
         <nav id="mainNav" style="display:none;">
             <button class="nav-item active" onclick="switchTab('accueil', this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span>Accueil</span></button>
@@ -629,6 +629,8 @@
                 document.getElementById('inviteCodeText').innerText = generatedCode;
                 document.getElementById('refLinkDisplay').innerText = PRODUCTION_URL + '/?ref=' + encodeURIComponent(currentUser);
                 
+                // Force l'affichage de l'accueil immédiatement pour éviter l'écran blanc
+                switchTab('accueil', document.querySelectorAll('.nav-item')[0]);
                 refreshBalance();
             }
         });
@@ -750,11 +752,14 @@
         function switchTab(tabId, btnElement) {
             document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            const targetTab = document.getElementById('tab-' + tabId);
+            if (targetTab) targetTab.classList.add('active');
             if(btnElement) btnElement.classList.add('active');
+            
             if(currentUser) {
                 refreshBalance();
-                if(tabId === 'lignes') renderPurchasedPacks();
+                if(tabId === 'lignes' && window._currentPacks) renderPurchasedPacks(window._currentPacks);
             }
         }
 
