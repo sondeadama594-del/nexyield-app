@@ -6,12 +6,11 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Base de données en mémoire robuste
-let users = {}; // { phone: { password, depositBalance, withdrawableBalance, refBy, referralEarnings, packs, deposits, withdrawals } }
+let users = {}; 
 let deposits = [];
 let withdrawals = [];
 
-// Route d'inscription
+// Inscription
 app.post('/api/register', (req, res) => {
     let { phone, password, refBy } = req.body;
     if (!phone || !password) return res.json({ success: false, error: "Numéro et mot de passe requis." });
@@ -40,7 +39,7 @@ app.post('/api/register', (req, res) => {
     });
 });
 
-// Route de connexion
+// Connexion
 app.post('/api/login', (req, res) => {
     let { phone, password } = req.body;
     if (!phone || !password) return res.json({ success: false, error: "Champs requis." });
@@ -59,25 +58,35 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// Récupérer les infos d'un utilisateur, son équipe et ses filleuls
+// Récupérer les infos utilisateur et l'équipe
 app.get('/api/user/:phone', (req, res) => {
     let phone = req.params.phone.trim();
     const user = users[phone];
     if (!user) return res.json({ success: false, error: "Utilisateur introuvable." });
 
-    // Trouver tous les filleuls de cet utilisateur
     let referralsList = [];
+    let cleanMyPhone = phone.replace(/[^0-9]/g, '');
+    let myCode = 'NX' + cleanMyPhone.slice(-4);
+
     for (let uPhone in users) {
         let u = users[uPhone];
-        // Si le filleul a pour parrain ce numéro OU le code de parrainage généré (NX + 4 derniers chiffres)
-        let generatedCode = 'NX' + uPhone.replace(/[^0-9]/g, '').slice(-4).toUpperCase();
-        if (u.refBy && (u.refBy === phone || u.refBy === generatedCode)) {
-            let hasInvested = u.deposits && u.deposits.some(d => d.status === 'VALIDÉ');
-            referralsList.push({
-                phone: uPhone,
-                joinedAt: u.joinedAt || "Récemment",
-                invested: hasInvested
-            });
+        if (u.refBy) {
+            let cleanRef = u.refBy.replace(/[^0-9A-Z]/g, '').toUpperCase();
+            let cleanParrainPhone = phone.replace(/[^0-9]/g, '');
+            
+            if (
+                cleanRef === cleanParrainPhone || 
+                cleanRef === phone || 
+                cleanRef === myCode ||
+                cleanRef === cleanMyPhone
+            ) {
+                let hasInvested = u.deposits && u.deposits.some(d => d.status === 'VALIDÉ');
+                referralsList.push({
+                    phone: uPhone,
+                    joinedAt: u.joinedAt || "Récemment",
+                    invested: hasInvested
+                });
+            }
         }
     }
 
@@ -91,7 +100,7 @@ app.get('/api/user/:phone', (req, res) => {
     });
 });
 
-// Acheter un pack d'investissement
+// Achat d'un pack
 app.post('/api/buy-pack', (req, res) => {
     let { userPhone, name, price, dailyGain, percent } = req.body;
     const user = users[userPhone];
@@ -119,7 +128,7 @@ app.post('/api/buy-pack', (req, res) => {
     });
 });
 
-// Effectuer un dépôt
+// Dépôt
 app.post('/api/deposit', (req, res) => {
     let { userPhone, senderPhone, amount, method } = req.body;
     const user = users[userPhone];
@@ -140,7 +149,7 @@ app.post('/api/deposit', (req, res) => {
     res.json({ success: true, message: "Dépôt enregistré." });
 });
 
-// Demande de retrait
+// Retrait
 app.post('/api/withdraw', (req, res) => {
     let { userPhone, amount, withdrawPhone } = req.body;
     const user = users[userPhone];
@@ -168,7 +177,7 @@ app.post('/api/withdraw', (req, res) => {
     res.json({ success: true, withdrawableBalance: user.withdrawableBalance });
 });
 
-// Historique personnel
+// Historique
 app.get('/api/user/history/:phone', (req, res) => {
     let phone = req.params.phone.trim();
     const user = users[phone];
@@ -176,22 +185,12 @@ app.get('/api/user/history/:phone', (req, res) => {
     res.json({ deposits: user.deposits || [], withdrawals: user.withdrawals || [] });
 });
 
-// Route pour tourner la roue (Bonus 50 FCFA)
-app.post('/api/spin-wheel', (req, res) => {
-    let { userPhone } = req.body;
-    const user = users[userPhone];
-    if (!user) return res.json({ success: false, error: "Utilisateur introuvable." });
-
-    user.withdrawableBalance += 50;
-    res.json({ success: true, withdrawableBalance: user.withdrawableBalance });
-});
-
-// Panel Admin - Données
+// Admin Données
 app.get('/api/admin/data', (req, res) => {
     res.json({ deposits, withdrawals });
 });
 
-// Valider ou Rejeter un dépôt + Attribution des 25% de parrainage
+// Validation dépôt + Parrainage 25%
 app.post('/api/admin/verify-deposit', (req, res) => {
     const { depositId, action } = req.body;
     const dep = deposits.find(d => d.id === depositId);
@@ -201,18 +200,15 @@ app.post('/api/admin/verify-deposit', (req, res) => {
         dep.status = 'VALIDÉ';
         const user = users[dep.userPhone];
         if (user) {
-            // Vérifier si c'est le PREMIER dépôt validé de cet utilisateur pour déclencher le parrainage 25%
             let validDepositsCount = user.deposits.filter(d => d.status === 'VALIDÉ').length;
-            
             user.depositBalance += dep.amount;
 
-            // Si c'est le tout premier dépôt validé et qu'il a un parrain
             if (validDepositsCount === 1 && user.refBy) {
                 for (let pPhone in users) {
                     let parentUser = users[pPhone];
                     let parentCode = 'NX' + pPhone.replace(/[^0-9]/g, '').slice(-4).toUpperCase();
                     if (user.refBy === pPhone || user.refBy === parentCode) {
-                        let commission = dep.amount * 0.25; // 25% du premier dépôt
+                        let commission = dep.amount * 0.25;
                         parentUser.withdrawableBalance += commission;
                         parentUser.referralEarnings = (parentUser.referralEarnings || 0) + commission;
                         break;
@@ -226,7 +222,7 @@ app.post('/api/admin/verify-deposit', (req, res) => {
     res.json({ success: true });
 });
 
-// Traiter un retrait
+// Validation retrait
 app.post('/api/admin/verify-withdrawal', (req, res) => {
     const { withdrawalId, action } = req.body;
     const wit = withdrawals.find(w => w.id === withdrawalId);
@@ -236,12 +232,12 @@ app.post('/api/admin/verify-withdrawal', (req, res) => {
     if (action === 'CANCEL') {
         wit.status = 'ANNULÉ';
         const user = users[wit.userPhone];
-        if (user) user.withdrawableBalance += wit.requestedAmount; // Remboursement si annulé
+        if (user) user.withdrawableBalance += wit.requestedAmount;
     }
     res.json({ success: true });
 });
 
-// Simuler les gains de 24h
+// Simulation gains 24h
 app.post('/api/admin/trigger-daily-yield', (req, res) => {
     for (let phone in users) {
         let user = users[phone];
