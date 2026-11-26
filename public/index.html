@@ -1099,9 +1099,23 @@
 }
 
         async function verifyWithdrawal(id, action) {
-            await fetch('/api/admin/verify-withdrawal', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({withdrawalId: id, action}) });
-            loadAdminData();
-        }
+  const res = await fetch('/api/admin/verify-withdrawal', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-admin-token': window.adminToken || ''
+    },
+    body: JSON.stringify({ withdrawalId: id, action })
+  });
+
+  const data = await res.json();
+  if (!res.ok || data.success === false) {
+    alert(data.error || ('Erreur ' + res.status));
+    return;
+  }
+
+  await loadAdminData();
+}
 
         async function triggerDailyYield() {
     const res = await fetch('/api/admin/trigger-daily-yield', {
