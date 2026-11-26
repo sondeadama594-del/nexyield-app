@@ -1079,10 +1079,24 @@
             }
         }
 
-        async function verifyDeposit(id, action) {
-            await fetch('/api/admin/verify-deposit', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({depositId: id, action}) });
-            loadAdminData();
-        }
+       async function verifyDeposit(id, action) {
+    const res = await fetch('/api/admin/verify-deposit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-admin-token': window.adminToken || ''
+        },
+        body: JSON.stringify({ depositId: id, action })
+    });
+
+    const data = await res.json();
+    if (!res.ok || data.success === false) {
+        alert(data.error || ('Erreur ' + res.status));
+        return;
+    }
+
+    await loadAdminData();
+}
 
         async function verifyWithdrawal(id, action) {
             await fetch('/api/admin/verify-withdrawal', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({withdrawalId: id, action}) });
