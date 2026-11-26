@@ -743,11 +743,25 @@
             }
         }
 
-        function ouvrirAdminSecret() {
-            const mdp = prompt("Mot de passe admin :");
-            if (mdp === "Demss93") openAdminPanel();
-            else if (mdp !== null) alert("Incorrect.");
-        }
+        async function ouvrirAdminSecret() {
+    const mdp = prompt("Mot de passe admin :");
+    if (mdp === null) return;
+
+    const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: mdp })
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.success || !data.token) {
+        alert(data.error || "Incorrect.");
+        return;
+    }
+
+    window.adminToken = data.token;
+    openAdminPanel();
+}
 
         function switchTab(tabId, btnElement) {
             document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
@@ -1021,10 +1035,19 @@
         function openAdminPanel() { document.getElementById('adminModal').style.display = 'flex'; loadAdminData(); }
 
         async function loadAdminData() {
-            const listDiv = document.getElementById('adminListContent');
-            listDiv.innerHTML = 'Chargement...';
-            const res = await fetch('/api/admin/data');
-            const data = await res.json();
+    const listDiv = document.getElementById('adminListContent');
+    listDiv.innerHTML = 'Chargement...';
+
+    const res = await fetch('/api/admin/data', {
+        headers: { 'x-admin-token': window.adminToken || '' }
+    });
+
+    if (!res.ok) {
+        listDiv.innerHTML = 'Erreur ' + res.status + ' : accès refusé.';
+        return;
+    }
+
+    const data = await res.json();
             if(adminCurrentTab === 'deposits') {
                 if(data.deposits.length === 0) { listDiv.innerHTML = 'Aucun dépôt.'; return; }
                 listDiv.innerHTML = data.deposits.map(d => `
