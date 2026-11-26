@@ -1104,10 +1104,28 @@
         }
 
         async function triggerDailyYield() {
-            await fetch('/api/admin/trigger-daily-yield', { method: 'POST' });
-            if (currentUser) refreshBalance();
-            alert("Gains de 24h distribués à tous les packs actifs !");
+    const res = await fetch('/api/admin/trigger-daily-yield', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-admin-token': window.adminToken || ''
         }
+    });
+
+    const data = await res.json();
+    if (!res.ok || data.success === false) {
+        alert(data.error || ('Erreur ' + res.status));
+        return;
+    }
+
+    if (typeof currentUser !== 'undefined' && currentUser && typeof refreshBalance === 'function') {
+        await refreshBalance();
+    }
+    if (typeof loadAdminData === 'function') {
+        await loadAdminData();
+    }
+    alert("Gains de 24h distribués à tous les packs actifs !");
+}
 
         function logoutUser() {
             localStorage.removeItem('nexyield_active_user');
