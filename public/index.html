@@ -592,13 +592,21 @@
         const PRODUCTION_URL = 'https://nexyield-app.onrender.com';
 
         window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const refCode = urlParams.get('ref');
-            if (refCode) {
-                localStorage.setItem('nexyield_ref_by', refCode.trim());
-                switchAuthScreenMode('register');
-                document.getElementById('authInviteCode').value = refCode.trim();
-            }
+      const urlParams = new URLSearchParams(window.location.search);
+      const rawRef = urlParams.get('ref');
+      if (rawRef) {
+        const cleaned = rawRef.trim();
+        const digits = cleaned.replace(/\D/g, '');
+        const formattedCode = /^NX\d{2,}$/i.test(cleaned)
+          ? cleaned.toUpperCase()
+          : (digits.length >= 2 ? 'NX' + digits.slice(-2) : '');
+
+        if (formattedCode) {
+          localStorage.setItem('nexyield_ref_by', formattedCode);
+          switchAuthScreenMode('register');
+          document.getElementById('authInviteCode').value = formattedCode;
+        }
+      }
 
             const savedPhone = localStorage.getItem('nexyield_saved_phone');
             const savedPrefix = localStorage.getItem('nexyield_saved_prefix');
