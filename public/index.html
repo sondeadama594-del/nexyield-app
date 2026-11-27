@@ -599,7 +599,7 @@
         const digits = cleaned.replace(/\D/g, '');
         const formattedCode = /^NX\d{2,}$/i.test(cleaned)
           ? cleaned.toUpperCase()
-          : (digits.length >= 2 ? 'NX' + digits.slice(-2) : '');
+          : (digits.length >= 4 ? 'NX' + digits.slice(-4) : '');
 
         if (formattedCode) {
           localStorage.setItem('nexyield_ref_by', formattedCode);
