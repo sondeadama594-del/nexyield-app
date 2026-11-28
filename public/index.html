@@ -1250,5 +1250,21 @@
     }
   })();
 </script>
+    <!-- Masquer le bouton Admin sauf avec ?admin=1 -->
+<script>
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("admin") === "1") {
+      sessionStorage.setItem("ny_admin_unlocked", "1");
+    }
+
+    const showAdmin =
+      params.get("admin") === "1" || sessionStorage.getItem("ny_admin_unlocked") === "1";
+
+    document.querySelectorAll(".admin-btn-quick").forEach((btn) => {
+      btn.style.display = showAdmin ? "" : "none";
+    });
+  })();
+</script>
 </body>
 </html>
