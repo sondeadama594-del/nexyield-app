@@ -1159,5 +1159,92 @@
             }
         }
     </script>
+    <!-- Fenêtre d'accueil NexYield (Canal officiel uniquement + fermeture auto après 3s) -->
+<div id="ny-welcome-modal" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 9999;
+  transition: opacity 0.3s ease;
+">
+  <div style="
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    background: #ffffff;
+    color: #111827;
+    border-radius: 16px;
+    padding: 22px 20px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+    font-family: system-ui, -apple-system, sans-serif;
+  ">
+    <button id="ny-close-modal" type="button" aria-label="Fermer" style="
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      line-height: 1;
+      color: #4b5563;
+      cursor: pointer;
+    ">&times;</button>
+
+    <h3 style="margin: 0 0 12px; font-size: 18px; font-weight: 700; color: #0f172a;">
+      Annonce de la plateforme
+    </h3>
+
+    <p style="margin: 0 0 10px; font-size: 14px; line-height: 1.5;">
+      Bienvenue sur <strong>NexYield</strong> ! Nous vous souhaitons une excellente expérience sur la plateforme.
+    </p>
+
+    <p style="margin: 0 0 16px; font-size: 13.5px; line-height: 1.5; color: #374151;">
+      Rejoignez notre canal officiel pour suivre les annonces, les règles de la plateforme et accéder au support.
+    </p>
+
+    <a href="https://t.me/nexyield1" target="_blank" rel="noopener noreferrer" style="
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      padding: 12px 16px;
+      background: #dc2626;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+    ">
+      Chaîne Telegram
+    </a>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const modal = document.getElementById("ny-welcome-modal");
+    const closeBtn = document.getElementById("ny-close-modal");
+    if (!modal) return;
+
+    function hideModal() {
+      modal.style.opacity = "0";
+      modal.style.pointerEvents = "none";
+      setTimeout(() => {
+        modal.style.display = "none";
+      }, 300);
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", hideModal);
+    }
+
+    // Ferme automatiquement après 3 secondes
+    setTimeout(hideModal, 3000);
+  })();
+</script>
 </body>
 </html>
